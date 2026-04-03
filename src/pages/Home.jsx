@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Briefcase, Users, Monitor } from "lucide-react";
 
 // ── CONSTANTS ──────────────────────────────────────────────────────────────
 const PHOTOS = [
-  { src: "/images/gallery1.jpg",  caption: "Computer Lab",         tall: false },
-  { src: "/images/gallery2.jpg",  caption: "Hands-on Training",    tall: true  },
-  { src: "/images/gallery3.jpg",  caption: "Graphic Design Class", tall: false },
-  { src: "/images/gallery4.jpg",  caption: "Student Batch",        tall: true  },
-  { src: "/images/gallery5.jpg",  caption: "Certificate Ceremony", tall: false },
-  { src: "/images/gallery6.jpg",  caption: "AI Workshop",          tall: true  },
-  { src: "/images/gallery7.jpg",  caption: "Accounting Training",  tall: false },
-  { src: "/images/gallery8.jpg",  caption: "Video Editing Lab",    tall: true  },
-  { src: "/images/gallery9.jpg",  caption: "DTP & Design",         tall: false },
-  { src: "/images/gallery10.jpg", caption: "Student Projects",     tall: false },
-  { src: "/images/gallery11.jpg", caption: "Campus View",          tall: true  },
-  { src: "/images/gallery12.jpg", caption: "Graduation Day",       tall: false },
+  { src: "/images/gallery1.jpg",  caption: "Reception",         tall: false },
+  // { src: "/images/gallery2.jpg",  caption: "Hands-on Training",    tall: true  },
+  // { src: "/images/gallery3.jpg",  caption: "Graphic Design Class", tall: false },
+  // { src: "/images/gallery4.jpg",  caption: "Student Batch",        tall: true  },
+  { src: "/images/gallery11.jpg",  caption: "Workshop", tall: true },
+  // { src: "/images/gallery6.jpg",  caption: "AI Workshop",          tall: true  },
+  { src: "/images/gallery3.jpg",  caption: "Certificate Ceremony",  tall: true },
+  { src: "/images/gallery4.jpg",  caption: "Video Editing Lab",    tall: false  },
+  { src: "/images/gallery5.jpg",  caption: "Workshop",         tall: false },
+  { src: "/images/gallery2.jpg", caption: "Computer Lab",     tall: true },
+  { src: "/images/gallery7.jpg", caption: "Campus View",          tall: true  },
+  { src: "/images/gallery6.jpg", caption: "Workshop",       tall: false },
 ];
 
 const COURSES = [
@@ -236,15 +237,51 @@ const TESTIMONIALS = [
 ];
 
 const WHY_ITEMS = [
-  { icon: "🧑‍🏫", title: "Experienced Trainers",         desc: "Learn from skilled professionals with real-world industry experience in every subject."        },
-  { icon: "💻",    title: "Practical Hands-on Training",  desc: "Every class is built around real software tools — not just theory and slides."                  },
-  { icon: "📊",    title: "Industry-Relevant Courses",    desc: "Curriculum designed to match what employers and the market actually need today."                  },
-  { icon: "🖥️",   title: "Modern Learning Environment",  desc: "Well-equipped computer lab with the latest software and modern learning tools."                   },
-  { icon: "🎯",    title: "Job-Oriented Programs",        desc: "Every course is structured to give you real, employable skills from day one."                     },
-  { icon: "📜",    title: "Govt. Authorized Certificate", desc: "Receive an officially recognized certificate trusted by employers across all industries."          },
-  { icon: "🤝",    title: "Personalized Attention",       desc: "Small batches ensure every student gets individual focus, guidance and support."                   },
-  { icon: "💰",    title: "Affordable Course Fees",       desc: "Quality digital education at fees that are accessible to every student in the region."            },
-  { icon: "🚀",    title: "Skill Development Focus",      desc: "We build skills that translate directly to real workplace performance and career outcomes."        },
+  {
+    icon: "clock",
+    title: "Industry-Experienced Trainers",
+    desc: "Learn directly from professionals who bring real industry knowledge, practical insights, and job-ready skills to every class."
+  },
+  {
+    icon: "bolt",
+    title: "Hands-On Practical Training",
+    desc: "Work on real tools, live projects, and practical exercises — not just theory or slides."
+  },
+  {
+    icon: "target",
+    title: "Industry-Relevant Curriculum",
+    desc: "Courses are designed based on current market demand to ensure you learn exactly what companies are hiring for."
+  },
+  {
+    icon: "monitor",
+    title: "Modern Lab & Learning Setup",
+    desc: "Train in a fully equipped computer lab with the latest software and a distraction-free environment."
+  },
+  {
+    icon: "briefcase",
+    title: "Job-Focused Programs",
+    desc: "Every course is structured to make you job-ready with practical skills from day one."
+  },
+  {
+    icon: "badge",
+    title: "Government-Recognized Certification",
+    desc: "Earn a trusted certificate that adds real value to your resume and improves your job opportunities."
+  },
+  {
+    icon: "users",
+    title: "Personalized Mentorship",
+    desc: "Small batch sizes ensure one-on-one guidance, doubt clearing, and continuous support."
+  },
+  {
+    icon: "coin",
+    title: "Affordable & Accessible Fees",
+    desc: "High-quality digital education at a price that is affordable for every student."
+  },
+  {
+    icon: "growth",
+    title: "Career & Skill Development Focus",
+    desc: "We focus on building real-world skills that help you perform confidently in jobs and internships."
+  }
 ];
 
 // const MARQUEE_TOOLS = [
@@ -254,6 +291,101 @@ const WHY_ITEMS = [
 // ];
 
 // ── HOOKS ──────────────────────────────────────────────────────────────────
+function UiIcon({ name, className = "w-6 h-6 text-blue-600" }) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2.2,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  };
+
+  if (name === "clock") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <circle cx="12" cy="12" r="8" />
+        <path d="M12 8v4l3 2" />
+      </svg>
+    );
+  }
+
+  if (name === "bolt") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <path d="M13.5 3.5 7 12h5l-1.5 8.5L17 12h-5z" />
+      </svg>
+    );
+  }
+
+  if (name === "target") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <circle cx="12" cy="12" r="8" />
+        <circle cx="12" cy="12" r="4.5" />
+        <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+
+  if (name === "monitor") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <rect x="4" y="5" width="16" height="11" rx="2" />
+        <path d="M9 19h6M12 16v3" />
+      </svg>
+    );
+  }
+
+  if (name === "briefcase") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <rect x="4" y="7" width="16" height="11" rx="2" />
+        <path d="M9 7V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1M4 11h16" />
+      </svg>
+    );
+  }
+
+  if (name === "badge") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <circle cx="12" cy="10" r="5.5" />
+        <path d="m9.2 14.8-1.3 5 4.1-2.1 4.1 2.1-1.3-5" />
+      </svg>
+    );
+  }
+
+  if (name === "users") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <circle cx="9" cy="9" r="2.7" />
+        <circle cx="15.5" cy="8.3" r="2.2" />
+        <path d="M4.8 18a4.6 4.6 0 0 1 8.4 0M13 17.6a3.8 3.8 0 0 1 6.2 0" />
+      </svg>
+    );
+  }
+
+  if (name === "coin") {
+    return (
+      <svg viewBox="0 0 24 24" className={className} {...common}>
+        <circle cx="12" cy="12" r="7.5" />
+        <path d="M14.6 9.6a2.5 2.5 0 0 0-2.5-1.5c-1.6 0-2.8.8-2.8 2s1 1.7 2.7 2l.8.1c1.4.2 2.2.7 2.2 1.8 0 1.3-1.2 2.1-2.9 2.1a3.5 3.5 0 0 1-3-1.4M12 7.2v9.6" />
+      </svg>
+    );
+  }
+
+  if (name === "growth") {
+    return (
+    <svg viewBox="0 0 24 24" className={className} {...common}>
+      <path d="M5 14l5-5 4 4 5-5" />
+      <path d="M14 4h5v5" />
+    </svg>
+    );
+  }
+
+  return null;
+}
+
+
 function useReduceMotion() {
   const [rm, setRm] = useState(false);
   useEffect(() => {
@@ -535,7 +667,9 @@ function CourseModal({ course, onClose }) {
 
           <div>
             <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center text-blue-700 text-xs">📚</span>
+              <span className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center">
+                <UiIcon name="monitor" className="w-4 h-4 text-blue-700" />
+              </span>
               What You Will Learn
             </h4>
             <div className="grid sm:grid-cols-2 gap-2">
@@ -555,7 +689,9 @@ function CourseModal({ course, onClose }) {
           {course.careers && (
             <div>
               <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center text-orange-700 text-xs">💼</span>
+               <span className="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <UiIcon name="briefcase" className="w-4 h-4 text-orange-700" />
+                </span>
                 Career Opportunities
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -656,7 +792,7 @@ export default function Home() {
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       setCounted(true);
-      const targets = { courses: 15, students: 100, years: 1 };
+      const targets = { courses: 30, students: 1000, years: 1 };
       const steps = 60;
       let step = 0;
       const id = setInterval(() => {
@@ -834,7 +970,20 @@ export default function Home() {
                     style={{ background: "linear-gradient(180deg, #f59e0b 0%, #ea580c 100%)" }}
                   >
                     {/* globe icon */}
-                    <span className="text-3xl sm:text-4xl drop-shadow-sm">🌍</span>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-8 h-8 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M4 6.5C4 5.7 4.7 5 5.5 5H10c1.1 0 2 .9 2 2v12c0-1.1-.9-2-2-2H5.5C4.7 17 4 16.3 4 15.5v-9z" />
+                        <path d="M20 6.5c0-.8-.7-1.5-1.5-1.5H14c-1.1 0-2 .9-2 2v12c0-1.1.9-2 2-2h4.5c.8 0 1.5-.7 1.5-1.5v-9z" />
+                      </svg>
+                    </div>
                     {/* vertical text label */}
                     <div className="flex flex-col items-center gap-0.5 mt-1">
                       <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] text-white/90">World's</span>
@@ -980,7 +1129,10 @@ export default function Home() {
                   className="absolute top-0 left-0 sm:-left-4 -translate-y-3 rounded-xl border border-slate-100 bg-white px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-lg text-xs font-bold text-slate-700 anim-float-2"
                   style={{ transform: "translateZ(50px)" }}
                 >
-                  🎓 100+ Students Trained
+                  <div className="flex items-center gap-1.5">
+                    <UiIcon name="users" className="w-4 h-4 text-slate-700" />
+                    <span>1000+ Students Trained</span>
+                  </div>
                 </div>
 
                 {/* floating badge — top right: AI Card */}
@@ -994,7 +1146,11 @@ export default function Home() {
                 >
                   <div className="px-3 sm:px-4 py-2 sm:py-3 text-white">
                     <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-80 leading-tight">World's First</p>
-                    <p className="text-sm sm:text-base font-black leading-tight">🌍 AI Card</p>
+                    <div className="flex items-center gap-1.5">
+                      <UiIcon name="badge" className="w-4 h-4 text-white" />
+                      <UiIcon name="monitor" className="w-4 h-4 text-white" />
+                      <span className="text-sm sm:text-base font-black leading-tight">AI Card</span>
+                    </div>
                     <p className="text-[9px] sm:text-[10px] text-white/75 font-semibold mt-0.5 leading-tight">Activate Now →</p>
                   </div>
                 </div>
@@ -1026,7 +1182,10 @@ export default function Home() {
             {/* LEFT */}
             <div className="anim-fadeInUp">
               <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
-                🏫 Est. Belthangady
+                <div className="inline-flex items-center gap-2 ...">
+                  <UiIcon name="monitor" className="w-4 h-4 text-blue-700" />
+                  <span>Est. Belthangady</span>
+                </div>
               </div>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
                 About <span className="text-blue-700">Gurukula</span>
@@ -1042,16 +1201,18 @@ export default function Home() {
               {/* quick stats row */}
               <div className="mt-8 grid grid-cols-3 gap-4">
                 {[
-                  { icon: "🎓", val: "100+", lab: "Students" },
-                  { icon: "📚", val: "15+",   lab: "Courses"  },
-                  { icon: "⭐", val: "4.9",   lab: "Rating"   },
-                ].map((s) => (
-                  <div key={s.lab} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center hover:border-blue-200 hover:bg-blue-50 transition-all duration-200">
-                    <div className="text-2xl mb-1">{s.icon}</div>
-                    <p className="text-xl font-black text-slate-900">{s.val}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{s.lab}</p>
-                  </div>
-                ))}
+                    { icon: "users", val: "1000+", lab: "Students" },
+                    { icon: "monitor", val: "30+", lab: "Courses" },
+                    { icon: "badge", val: "5", lab: "Rating" },
+                  ].map((s) => (
+                    <div key={s.lab} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center hover:border-blue-200 hover:bg-blue-50 transition-all duration-200">
+                      <div className="flex justify-center mb-2">
+                        <UiIcon name={s.icon} className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <p className="text-xl font-black text-slate-900">{s.val}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{s.lab}</p>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -1081,6 +1242,210 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+
+      {/* ════════════════════════════════════════════════════════════════
+          FOUNDER SECTION
+          ▶ Place this AFTER the About section and BEFORE Vision & Mission
+      ════════════════════════════════════════════════════════════════ */}
+      <section id="founder" className="scroll-mt-24 bg-slate-50 py-20 sm:py-24 px-4 sm:px-8 relative overflow-hidden">
+
+        {/* BG BLOBS */}
+        <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-40" />
+        <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-72 h-72 bg-orange-100 rounded-full blur-3xl opacity-35" />
+        <div className="pointer-events-none absolute -z-10 top-1/2 right-1/4 w-64 h-64 bg-violet-50 rounded-full blur-3xl opacity-30" />
+
+        <div className="mx-auto max-w-7xl">
+
+          {/* SECTION LABEL */}
+          <div className="text-center mb-14" {...revealed("founder-hdr")}>
+            <SectionHeader
+              badge="👤 Meet the Founder"
+              title="The Person"
+              highlight="Behind Gurukula"
+              subtitle="Passionate about making quality digital education accessible to every student in Karnataka."
+            />
+          </div>
+
+          {/* MAIN CARD */}
+          <div
+            {...revealed("founder-card")}
+            className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl"
+          >
+            {/* decorative gradient top strip */}
+            <div className="h-2 w-full" style={{ background: "linear-gradient(90deg, #1D4ED8 0%, #f97316 50%, #1D4ED8 100%)" }} />
+
+            <div className="grid lg:grid-cols-[380px_1fr] gap-0">
+
+              {/* LEFT — photo + identity */}
+              <div
+                className="relative flex flex-col items-center justify-start gap-6 px-8 py-10 lg:py-12"
+                style={{ background: "linear-gradient(160deg, #0F172A 0%, #1E3A8A 60%, #1D4ED8 100%)" }}
+              >
+                {/* decorative circles */}
+                <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-white/[0.04] pointer-events-none" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full bg-blue-400/5 blur-2xl pointer-events-none" />
+
+                {/* PHOTO */}
+                <div className="relative z-10 mt-2">
+                  <div className="relative">
+                    {/* outer ring */}
+                    <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-full p-1 bg-gradient-to-br from-amber-400 via-orange-500 to-blue-600 shadow-2xl">
+                      <div className="w-full h-full rounded-full overflow-hidden bg-slate-800 border-4 border-slate-900">
+                        <img
+                          src="/images/founder1.jpg"
+                          alt="Santhosh — Founder, Gurukula Computer"
+                          className="w-full h-full object-cover object-top"
+                          loading="lazy"
+                          onError={(e) => {
+                            // fallback avatar if image missing
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                        {/* fallback initials */}
+                        <div className="w-full h-full hidden items-center justify-center bg-gradient-to-br from-blue-700 to-blue-900">
+                          <span className="text-5xl font-black text-white">S</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* verified badge */}
+                    <div className="absolute -bottom-1 -right-1 w-12 h-12 rounded-full bg-green-500 border-4 border-slate-900 flex items-center justify-center shadow-lg">
+                      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* NAME + TITLE */}
+                <div className="relative z-10 text-center">
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">Santhosh</h3>
+                  <p className="text-orange-400 font-bold text-sm mt-1">Founder &amp; Director</p>
+                  <p className="text-blue-300 text-xs mt-0.5">Gurukula Computer, Belthangady</p>
+                </div>
+
+                {/* QUICK STATS */}
+                <div className="relative z-10 w-full grid grid-cols-3 gap-2 mt-2">
+                  {[
+                    { val: "1000+", lab: "Students" },
+                    { val: "2",     lab: "Locations" },
+                    { val: "30+",   lab: "Courses"   },
+                  ].map((s) => (
+                    <div key={s.lab} className="rounded-xl bg-white/10 border border-white/15 py-3 text-center backdrop-blur-sm hover:bg-white/20 transition-colors duration-200">
+                      <p className="text-lg sm:text-xl font-black text-white">{s.val}</p>
+                      <p className="text-[10px] text-blue-300 font-semibold mt-0.5">{s.lab}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* HOMETOWN PILL */}
+                <div className="relative z-10 inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-xs font-semibold text-blue-200">
+                  <span>📍</span> Dharmasthala, Karnataka
+                </div>
+              </div>
+
+              {/* RIGHT — bio content */}
+              <div className="flex flex-col justify-center px-6 sm:px-10 py-10 lg:py-12 gap-7">
+
+                {/* INTRO */}
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-widest mb-4">
+                    🎓 About Me
+                  </div>
+                  <p className="text-slate-700 text-sm sm:text-base leading-relaxed">
+                    I'm <span className="font-black text-slate-900">Santhosh</span>, founder of{" "}
+                    <span className="font-bold text-blue-700">ICON – National Board of Computer Education</span> in Ujire and{" "}
+                    <span className="font-bold text-blue-700">Gurukula Computer</span> in Belthangady. Hailing from Dharmasthala, Karnataka, I began as a Computer Trainer with 2 years of hands-on experience before launching ICON at age <span className="font-black text-orange-500">23</span>.
+                  </p>
+                </div>
+
+                {/* ACHIEVEMENT CARDS */}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    {
+                      icon: "🏆",
+                      color: "bg-amber-50 border-amber-200",
+                      titleColor: "text-amber-700",
+                      title: "Top 3 in Karnataka",
+                      desc: "Ranked among Karnataka's Top 3 Computer Training Institutes by NBCE",
+                    },
+                    {
+                      icon: "🎓",
+                      color: "bg-blue-50 border-blue-200",
+                      titleColor: "text-blue-700",
+                      title: "1,000+ Students Trained",
+                      desc: "Across two locations — Ujire and Belthangady",
+                    },
+                    {
+                      icon: "💡",
+                      color: "bg-green-50 border-green-200",
+                      titleColor: "text-green-700",
+                      title: "30+ Job-Ready Courses",
+                      desc: "AI Tools, Graphic Design, Tally, GST and beyond",
+                    },
+                    {
+                      icon: "",
+                      color: "bg-orange-50 border-orange-200",
+                      titleColor: "text-orange-700",
+                      title: "World's First AI Card",
+                      desc: "Exclusive AI Foundation, 50+ Tools, Power BI, Tableau, internships & scholarships",
+                    },
+                  ].map((item) => (
+                    <div key={item.title}
+                      className={`flex items-start gap-3 rounded-2xl border ${item.color} p-4 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200`}>
+                      <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                      <div className="min-w-0">
+                        <p className={`text-xs font-black uppercase tracking-wide ${item.titleColor}`}>{item.title}</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* MISSION STATEMENT */}
+                <div className="relative overflow-hidden rounded-2xl px-5 py-4 border border-blue-100 bg-blue-50">
+                  <div className="absolute -top-4 -right-4 text-6xl opacity-10 pointer-events-none select-none">"</div>
+                  <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-2">My Mission</p>
+                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed italic">
+                    "Equip every student with essential digital skills for success, making top-tier education accessible to all."
+                  </p>
+                  <p className="mt-2 text-xs font-bold text-slate-500">— Santhosh, Founder</p>
+                </div>
+
+                {/* CTA ROW */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="https://wa.me/916366564639"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group relative overflow-hidden flex items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 font-bold text-white text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-200 active:translate-y-0"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Connect on WhatsApp
+                  </a>
+                  <a
+                    href="#courses"
+                    className="group flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white px-5 py-3 font-bold text-blue-700 text-sm hover:bg-blue-700 hover:text-white hover:border-blue-700 transition-all duration-200 hover:-translate-y-0.5"
+                  >
+                    Explore Our Courses
+                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+      {/* ════════════════════════════════════════════════════════════════
+          END FOUNDER SECTION
+      ════════════════════════════════════════════════════════════════ */}
 
       {/* ════════════════════════════════════════════════════════════════
           VISION & MISSION
@@ -1163,49 +1528,96 @@ export default function Home() {
         </div>
       </section>
 
+      
+
       {/* ════════════════════════════════════════════════════════════════
           WHY CHOOSE US
       ════════════════════════════════════════════════════════════════ */}
-      <section id="why-choose-us" className="scroll-mt-24 py-20 sm:py-24 px-4 sm:px-8 bg-white relative overflow-hidden">
-        <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-40" />
-        <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-80 h-80 bg-orange-100 rounded-full blur-3xl opacity-35" />
+      <section
+        id="why-choose-us"
+        className="scroll-mt-24 py-20 sm:py-24 px-4 sm:px-8 bg-gradient-to-b from-white to-blue-50 relative overflow-hidden"
+      >
+        {/* Background Effects */}
+        <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-200 rounded-full blur-3xl opacity-30" />
+        <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-30" />
 
         <div className="mx-auto max-w-7xl">
-          <div className="text-center mb-14" {...revealed("why-hdr")}>
-            <SectionHeader badge="⭐ Why Choose Us" title="Why Students Choose" highlight="Gurukula"
-              subtitle="Practical training, industry-relevant courses and career-oriented learning to help students succeed in the digital world." />
+          
+          {/* Header */}
+          <div className="text-center mb-16" {...revealed("why-hdr")}>
+            <SectionHeader
+              badge="⭐ Why Choose Us"
+              title="Why Students Choose"
+              highlight="Gurukula"
+              subtitle="We focus on real skills, not just theory — helping you become job-ready from day one."
+            />
           </div>
 
-          <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Cards */}
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {WHY_ITEMS.map((item, i) => (
-              <div key={item.title}
-                {...revealed(`why-${i}`, `${i * 50}ms`)}
-                className="group relative overflow-hidden bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 cursor-default transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-blue-200"
-                {...cardTiltProps}>
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none" />
-                <div className="absolute top-5 right-5 w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-blue-700 flex items-center justify-center transition-colors duration-300">
-                  <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors duration-300">{String(i + 1).padStart(2, "0")}</span>
+              <div
+                key={item.title}
+                {...revealed(`why-${i}`, `${i * 60}ms`)}
+                {...cardTiltProps}
+                className="group relative bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-blue-300"
+              >
+                {/* Glow Effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 rounded-2xl bg-gradient-to-br from-blue-100/40 to-transparent" />
+
+                {/* Number Badge */}
+                <div className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-600 flex items-center justify-center transition">
+                  <span className="text-xs font-bold text-slate-400 group-hover:text-white">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                 </div>
+
                 <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-700 flex items-center justify-center text-2xl mb-4 transition-colors duration-300">{item.icon}</div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-2 pr-8">{item.title}</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                  {/* Icon */}
+                  <div className="w-14 h-14 rounded-xl bg-blue-100 group-hover:bg-white shadow-sm flex items-center justify-center mb-4 transition">
+                    <UiIcon className="w-7 h-7 text-blue-600 group-hover:scale-110 transition-transform duration-300" name={item.icon} />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-base font-semibold text-slate-900 mb-2">
+                    {item.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* CTA BANNER */}
-          <div className="mt-8 relative overflow-hidden rounded-2xl px-6 sm:px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
-            style={{ background: "linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}>
-            <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-lg sm:text-xl font-black text-white">Ready to start your digital career?</p>
-              <p className="text-sm text-blue-200 mt-1">Join 100+ students already trained at Gurukula</p>
+          {/* CTA Banner */}
+          <div className="mt-14 relative overflow-hidden rounded-3xl px-6 sm:px-10 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl"
+            style={{
+              background:
+                "linear-gradient(135deg,#020617 0%,#1E3A8A 60%,#2563EB 100%)",
+            }}
+          >
+            {/* Glow */}
+            <div className="absolute -top-16 -right-16 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+
+            <div className="relative z-10 max-w-lg">
+              <p className="text-2xl sm:text-3xl font-extrabold text-white">
+                Start Your Digital Career Today 🚀
+              </p>
+              <p className="text-blue-200 mt-2 text-sm sm:text-base">
+                Join <span className="font-semibold text-white">1000+ students</span> who transformed their careers with Gurukula.
+              </p>
             </div>
-            <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
-              className="relative z-10 flex-shrink-0 bg-orange-500 hover:bg-orange-400 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg text-sm sm:text-base whitespace-nowrap">
-              WhatsApp Enquiry →
+
+            <a
+              href="https://wa.me/916366564639"
+              target="_blank"
+              rel="noreferrer"
+              className="relative z-10 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl text-sm sm:text-base"
+            >
+              Chat on WhatsApp →
             </a>
           </div>
         </div>
@@ -1281,7 +1693,7 @@ export default function Home() {
           >
             {[
               { val: "4.9",  label: "Overall Rating",    extra: <Stars size={12} /> },
-              { val: "100+", label: "Students Trained"   },
+              { val: "1000+", label: "Students Trained"   },
               { val: "98%",  label: "Satisfaction Rate"  },
               { val: "1+",   label: "Years of Excellence"},
             ].map((s) => (
@@ -1602,7 +2014,7 @@ export default function Home() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-blue-200">Monday – Saturday</span>
-                      <span className="text-sm font-bold text-white">9:00 AM – 6:00 PM</span>
+                      <span className="text-sm font-bold text-white">9:00 AM – 5:30 PM</span>
                     </div>
                     <div className="h-px bg-white/10" />
                     <div className="flex items-center justify-between">

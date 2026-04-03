@@ -45,7 +45,7 @@ function Navbar() {
 
           {/* AI Card nav link with badge */}
           <a
-            href="https://www.yaticorp.com/AI-Card"
+            href="https://www.yaticorp.com/ai-Card"
             target="_blank"
             rel="noreferrer"
             className="text-base font-bold text-slate-600 hover:text-blue-700 border-b-2 border-transparent hover:border-blue-700 pb-1 transition-all duration-200 flex items-center gap-2"
