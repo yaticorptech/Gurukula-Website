@@ -1,212 +1,40 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import certificateImg from "../images/certificate.jpg";
 
 // ── CONSTANTS ──────────────────────────────────────────────────────────────
 const PHOTOS = [
-  { src: "/images/gallery1.jpg",  caption: "Computer Lab",         tall: false },
-  { src: "/images/gallery2.jpg",  caption: "Hands-on Training",    tall: true  },
-  { src: "/images/gallery3.jpg",  caption: "Graphic Design Class", tall: false },
-  { src: "/images/gallery4.jpg",  caption: "Student Batch",        tall: true  },
-  { src: "/images/gallery5.jpg",  caption: "Certificate Ceremony", tall: false },
-  { src: "/images/gallery6.jpg",  caption: "AI Workshop",          tall: true  },
-  { src: "/images/gallery7.jpg",  caption: "Accounting Training",  tall: false },
-  { src: "/images/gallery8.jpg",  caption: "Video Editing Lab",    tall: true  },
-  { src: "/images/gallery9.jpg",  caption: "DTP & Design",         tall: false },
-  { src: "/images/gallery10.jpg", caption: "Student Projects",     tall: false },
-  { src: "/images/gallery11.jpg", caption: "Campus View",          tall: true  },
-  { src: "/images/gallery12.jpg", caption: "Graduation Day",       tall: false },
+  { src: "/images/gallery1.jpg",  caption: "Reception",          tall: false },
+  { src: "/images/gallery11.jpg", caption: "Workshop",           tall: true  },
+  { src: "/images/gallery3.jpg",  caption: "Certificate Ceremony", tall: true },
+  { src: "/images/gallery4.jpg",  caption: "Video Editing Lab",  tall: false },
+  { src: "/images/gallery5.jpg",  caption: "Workshop",           tall: false },
+  { src: "/images/gallery2.jpg",  caption: "Computer Lab",       tall: true  },
+  { src: "/images/gallery7.jpg",  caption: "Campus View",        tall: true  },
+  { src: "/images/gallery6.jpg",  caption: "Workshop",           tall: false },
 ];
 
 const COURSES = [
-  {
-    id: 1, title: "Diploma in Computer Application (DCA) + AI",
-    category: "Diploma Courses", 
-    duration: "6 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/dca.jpg", 
-    popular: true,
-    description: "DCA is a foundational computer course designed for beginners who want to build strong computer skills. Students learn computer fundamentals, MS Office applications, internet usage, and typing skills along with basic AI tools to improve productivity.",
-    learn: ["Computer Fundamentals & Windows", "MS Word, Excel, PowerPoint", "MS Access", "Internet & Email usage", "English Typing", "Introduction to AI tools"],
-    careers: ["Data Entry Operator", "Computer Operator", "Office Assistant", "Back Office Executive", "Documentation Assistant"],
-  },
-  {
-    id: 2, title: "Advance Diploma in Computer Application (ADCA) + AI",
-    category: "Diploma Courses", 
-    duration: "6 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/adca.jpg",
-    description: "ADCA is an advanced computer course that covers office applications, basic programming, accounting software, and web fundamentals.",
-    learn: ["Computer Fundamentals", "MS Office (Word, Excel, PowerPoint, Access)", "HTML (Basic Web Development)", "C Programming (Basics)", "Tally with GST", "Internet Applications", "AI Tools for productivity"],
-    careers: ["Computer Operator", "Office Administrator", "Junior Web Assistant", "Accounts Assistant", "MIS Executive"],
-  },
-  {
-    id: 3, title: "Diploma in Office Management & Accounting (DOMA) + AI",
-    category: "Diploma Courses", 
-    duration: "6 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/doma.png",
-    description: "This course focuses on office management and financial accounting.",
-    learn: ["Computer Fundamentals", "MS Office Applications", "Business Documentation", "Financial Accounting Basics", "Tally Accounting Software", "AI tools for business productivity"],
-    careers: ["Accounts Assistant", "Office Administrator", "Billing Executive", "Back Office Executive", "Junior Accountant"],
-  },
-  {
-    id: 4, title: "Desktop Publishing (DTP) + AI",
-    category: "Diploma Courses", 
-    duration: "6 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/dtp.jpg",
-    description: "DTP is designed for students interested in graphic design and publishing.",
-    learn: ["Adobe InDesign", "CorelDraw", "Photoshop", "English Typing", "Kannada Typing", "AI tools for design"],
-    careers: ["Graphic Designer", "DTP Operator", "Printing Press Designer", "Publishing Assistant", "Social Media Designer"],
-  },
-  {
-    id: 5, title: "Advanced Excel + Tally ERP9",
-    category: "Diploma Courses", 
-    duration: "2 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/aet.jpg",
-    description: "This course focuses on advanced spreadsheet skills and accounting software.",
-    learn: ["Advanced Excel Functions", "Data Analysis", "Financial Reports", "Tally ERP9 Accounting", "GST Entries"],
-    careers: ["Accounts Assistant", "MIS Executive", "Billing Executive", "Data Analyst (Entry Level)", "Office Accountant"],
-  },
-  {
-    id: 6, title: "Certificate in Office Automation (COA) + AI",
-    category: "Certificate Courses", 
-    duration: "3 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/coa.jpg",
-    description: "COA is a beginner-friendly course designed to teach essential computer and office skills.",
-    learn: ["Computer Basics", "Windows Operating System", "MS Word", "MS Excel", "MS PowerPoint", "AI productivity tools"],
-    careers: ["Office Assistant", "Computer Operator", "Data Entry Operator", "Receptionist"],
-  },
-  {
-    id: 7, title: "Certificate in Financial Accounting (CFA) + AI",
-    category: "Certificate Courses", 
-    duration: "3 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/cfa.jpg",
-    description: "This course introduces students to financial accounting concepts and Tally software.",
-    learn: ["Accounting Basics", "Business Transactions", "Tally Software", "GST Basics", "AI tools for accounting"],
-    careers: ["Accounts Assistant", "Billing Executive", "Tally Operator", "Junior Accountant"],
-  },
-  {
-    id: 8, title: "Certificate in Information Technology (CIT) + AI",
-    category: "Certificate Courses", 
-    duration: "3 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/cit.jpg",
-    description: "CIT provides basic IT knowledge including computer operations and office software.",
-    learn: ["Computer Fundamentals", "MS Office Applications", "Internet & Email", "AI tools for productivity"],
-    careers: ["Computer Operator", "Data Entry Operator", "Office Staff"],
-  },
-  {
-    id: 9, title: "Certificate in Photo & Video Editing + AI",
-    category: "Graphic Design Courses", 
-    duration: "6 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/cpve.jpg",
-    description: "This course trains students in professional photo and video editing tools.",
-    learn: ["Photoshop", "Premiere Pro", "After Effects", "Video Editing Techniques", "AI tools for editing"],
-    careers: ["Video Editor", "Photo Editor", "YouTube Editor", "Social Media Content Editor"],
-  },
-  {
-    id: 10, title: "Diploma in VFX & Post Production + AI",
-    category: "Graphic Design Courses", 
-    duration: "12 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/vfxp.jpg",
-    description: "A professional course focused on visual effects and post-production for films and digital media.",
-    learn: ["Photoshop", "Illustrator", "Audition", "Premiere Pro", "After Effects", "DaVinci Resolve", "AI video tools"],
-    careers: ["VFX Artist", "Video Editor", "Post Production Editor", "Motion Graphics Artist"],
-  },
-  {
-    id: 11, title: "Certificate in Motion Graphics + AI",
-    category: "Graphic Design Courses", 
-    duration: "4 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/cmg.jpg",
-    description: "This course teaches animation and motion design for advertisements and digital marketing.",
-    learn: ["Photoshop", "Illustrator", "After Effects", "Premiere Pro Basics", "AI animation tools"],
-    careers: ["Motion Graphics Designer", "Video Editor", "Animation Assistant"],
-  },
-  {
-    id: 12, title: "Certificate in Film Making + AI",
-    category: "Graphic Design Courses", 
-    duration: "2 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/cfm.jpg",
-    description: "Students learn the fundamentals of filmmaking including editing and storytelling.",
-    learn: ["Photoshop Basics", "Video Editing", "Premiere Pro", "Film Editing Techniques"],
-    careers: ["Video Editor", "Content Creator", "Assistant Editor"],
-  },
-  {
-    id: 13, title: "Certificate in Graphic Design + AI",
-    category: "Graphic Design Courses", 
-    duration: "6 Months", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/cgd.jpg",
-    description: "Professional graphic design skills for advertising, branding, and print media.",
-    learn: ["Photoshop", "Illustrator", "InDesign", "CorelDraw", "AI design tools"],
-    careers: ["Graphic Designer", "Branding Designer", "Social Media Designer", "Advertising Designer"],
-  },
-  {
-    id: 14, title: "Foundations of Artificial Intelligence",
-    category: "Artificial Intelligence Courses", 
-    duration: "30 Days", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/fai.jpg",
-    description: "An introductory course to understand AI concepts, tools, and applications.",
-    learn: ["Introduction to AI", "AI Applications", "AI Tools Overview"],
-    careers: ["AI Assistant", "AI Content Creator", "AI Tool Specialist"],
-  },
-  {
-    id: 15, title: "Applied Artificial Intelligence with 50+ AI Tools",
-    category: "Artificial Intelligence Courses", 
-    duration: "80 Days", 
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/aai.jpg",
-    description: "Students learn practical applications of AI tools for content creation and automation.",
-    learn: ["AI Content Creation", "Automation Tools", "AI Marketing Tools", "Productivity AI Tools"],
-    careers: ["AI Specialist", "Digital Marketer", "AI Content Creator", "Automation Specialist"],
-  },
-  {
-    id: 16, title: "Power BI",
-    category: "Artificial Intelligence Courses", 
-    duration: "90 Days",
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/powerbi.jpg",
-    description: "Data visualization and business intelligence using Power BI dashboards and reports.",
-    learn: ["Data Visualization", "Power BI Dashboards", "Business Reports"],
-    careers: ["Data Analyst", "Business Analyst", "MIS Executive"],
-  },
-  {
-    id: 17, title: "Tableau",
-    category: "Artificial Intelligence Courses", 
-    duration: "60 Days",
-    price: "₹18,000", 
-    rating: "4.5",
-    image: "/images/tableau.jpg",
-    description: "Interactive data visualizations and dashboards for business decision-making.",
-    learn: ["Tableau Dashboards", "Interactive Reports", "Business Data Visualization"],
-    careers: ["Data Analyst", "Business Intelligence Analyst"],
-  },
+  { id: 1,  title: "Diploma in Computer Application (DCA) + AI",            category: "Diploma Courses",                duration: "6 Months",   image: "/images/dca.jpg",     popular: false,  description: "DCA is a foundational computer course designed for beginners who want to build strong computer skills. Students learn computer fundamentals, MS Office applications, internet usage, and typing skills along with basic AI tools to improve productivity.", learn: ["Computer Fundamentals & Windows", "MS Word, Excel, PowerPoint", "MS Access", "Internet & Email usage", "English Typing", "Introduction to AI tools"], careers: ["Data Entry Operator", "Computer Operator", "Office Assistant", "Back Office Executive", "Documentation Assistant"] },
+  { id: 2,  title: "Advance Diploma in Computer Application (ADCA) + AI",   category: "Diploma Courses",                duration: "6 Months",   image: "/images/adca.jpg",    popular: false, description: "ADCA is an advanced computer course that covers office applications, basic programming, accounting software, and web fundamentals.", learn: ["Computer Fundamentals", "MS Office (Word, Excel, PowerPoint, Access)", "HTML (Basic Web Development)", "C Programming (Basics)", "Tally with GST", "Internet Applications", "AI Tools for productivity"], careers: ["Computer Operator", "Office Administrator", "Junior Web Assistant", "Accounts Assistant", "MIS Executive"] },
+  { id: 3,  title: "Diploma in Office Management & Accounting (DOMA) + AI", category: "Diploma Courses",                duration: "6 Months",   image: "/images/doma.png",    popular: false, description: "This course focuses on office management and financial accounting.", learn: ["Computer Fundamentals", "MS Office Applications", "Business Documentation", "Financial Accounting Basics", "Tally Accounting Software", "AI tools for business productivity"], careers: ["Accounts Assistant", "Office Administrator", "Billing Executive", "Back Office Executive", "Junior Accountant"] },
+  { id: 4,  title: "Desktop Publishing (DTP) + AI",                         category: "Diploma Courses",                duration: "6 Months",   image: "/images/dtp.jpg",     popular: false, description: "DTP is designed for students interested in graphic design and publishing.", learn: ["Adobe InDesign", "CorelDraw", "Photoshop", "English Typing", "Kannada Typing", "AI tools for design"], careers: ["Graphic Designer", "DTP Operator", "Printing Press Designer", "Publishing Assistant", "Social Media Designer"] },
+  { id: 5,  title: "Advanced Excel + Tally ERP9",                           category: "Diploma Courses",                duration: "2 Months",   image: "/images/aet.jpg",     popular: false, description: "This course focuses on advanced spreadsheet skills and accounting software.", learn: ["Advanced Excel Functions", "Data Analysis", "Financial Reports", "Tally ERP9 Accounting", "GST Entries"], careers: ["Accounts Assistant", "MIS Executive", "Billing Executive", "Data Analyst (Entry Level)", "Office Accountant"] },
+  { id: 6,  title: "Certificate in Office Automation (COA) + AI",           category: "Certificate Courses",            duration: "3 Months",   image: "/images/coa.jpg",     popular: false, description: "COA is a beginner-friendly course designed to teach essential computer and office skills.", learn: ["Computer Basics", "Windows Operating System", "MS Word", "MS Excel", "MS PowerPoint", "AI productivity tools"], careers: ["Office Assistant", "Computer Operator", "Data Entry Operator", "Receptionist"] },
+  { id: 7,  title: "Certificate in Financial Accounting (CFA) + AI",        category: "Certificate Courses",            duration: "3 Months",   image: "/images/cfa.jpg",     popular: false, description: "This course introduces students to financial accounting concepts and Tally software.", learn: ["Accounting Basics", "Business Transactions", "Tally Software", "GST Basics", "AI tools for accounting"], careers: ["Accounts Assistant", "Billing Executive", "Tally Operator", "Junior Accountant"] },
+  { id: 8,  title: "Certificate in Information Technology (CIT) + AI",      category: "Certificate Courses",            duration: "3 Months",   image: "/images/cit.jpg",     popular: false, description: "CIT provides basic IT knowledge including computer operations and office software.", learn: ["Computer Fundamentals", "MS Office Applications", "Internet & Email", "AI tools for productivity"], careers: ["Computer Operator", "Data Entry Operator", "Office Staff"] },
+  { id: 9,  title: "Certificate in Photo & Video Editing + AI",             category: "Graphic Design Courses",         duration: "6 Months",   image: "/images/cpve.jpg",    popular: false, description: "This course trains students in professional photo and video editing tools.", learn: ["Photoshop", "Premiere Pro", "After Effects", "Video Editing Techniques", "AI tools for editing"], careers: ["Video Editor", "Photo Editor", "YouTube Editor", "Social Media Content Editor"] },
+  { id: 10, title: "Diploma in VFX & Post Production + AI",                 category: "Graphic Design Courses",         duration: "12 Months",  image: "/images/vfxp.jpg",    popular: false, description: "A professional course focused on visual effects and post-production for films and digital media.", learn: ["Photoshop", "Illustrator", "Audition", "Premiere Pro", "After Effects", "DaVinci Resolve", "AI video tools"], careers: ["VFX Artist", "Video Editor", "Post Production Editor", "Motion Graphics Artist"] },
+  { id: 11, title: "Certificate in Motion Graphics + AI",                   category: "Graphic Design Courses",         duration: "4 Months",   image: "/images/cmg.jpg",     popular: false, description: "This course teaches animation and motion design for advertisements and digital marketing.", learn: ["Photoshop", "Illustrator", "After Effects", "Premiere Pro Basics", "AI animation tools"], careers: ["Motion Graphics Designer", "Video Editor", "Animation Assistant"] },
+  { id: 12, title: "Certificate in Film Making + AI",                       category: "Graphic Design Courses",         duration: "2 Months",   image: "/images/cfm.jpg",     popular: false, description: "Students learn the fundamentals of filmmaking including editing and storytelling.", learn: ["Photoshop Basics", "Video Editing", "Premiere Pro", "Film Editing Techniques"], careers: ["Video Editor", "Content Creator", "Assistant Editor"] },
+  { id: 13, title: "Certificate in Graphic Design + AI",                    category: "Graphic Design Courses",         duration: "6 Months",   image: "/images/cgd.jpg",     popular: false, description: "Professional graphic design skills for advertising, branding, and print media.", learn: ["Photoshop", "Illustrator", "InDesign", "CorelDraw", "AI design tools"], careers: ["Graphic Designer", "Branding Designer", "Social Media Designer", "Advertising Designer"] },
+  { id: 14, title: "Foundations of Artificial Intelligence",                category: "Artificial Intelligence Courses", duration: "30 Days",   image: "/images/fai.jpg",     popular: false, description: "An introductory course to understand AI concepts, tools, and applications.", learn: ["Introduction to AI", "AI Applications", "AI Tools Overview"], careers: ["AI Assistant", "AI Content Creator", "AI Tool Specialist"] },
+  { id: 15, title: "Applied Artificial Intelligence with 50+ AI Tools",     category: "Artificial Intelligence Courses", duration: "80 Days",   image: "/images/aai.jpg",     popular: false, description: "Students learn practical applications of AI tools for content creation and automation.", learn: ["AI Content Creation", "Automation Tools", "AI Marketing Tools", "Productivity AI Tools"], careers: ["AI Specialist", "Digital Marketer", "AI Content Creator", "Automation Specialist"] },
+  { id: 16, title: "Power BI",                                              category: "Artificial Intelligence Courses", duration: "90 Days",   image: "/images/powerbi.jpg", popular: false, description: "Data visualization and business intelligence using Power BI dashboards and reports.", learn: ["Data Visualization", "Power BI Dashboards", "Business Reports"], careers: ["Data Analyst", "Business Analyst", "MIS Executive"] },
+  { id: 17, title: "Tableau",                                               category: "Artificial Intelligence Courses", duration: "60 Days",   image: "/images/tableau.jpg", popular: false, description: "Interactive data visualizations and dashboards for business decision-making.", learn: ["Tableau Dashboards", "Interactive Reports", "Business Data Visualization"], careers: ["Data Analyst", "Business Intelligence Analyst"] },
+  { id: 18, title: "Certificate in SAP (FICO + MM)",                        category: "Certificate Courses", duration: "3 Months", image: "/images/sap.jpg", popular: false, description: "SAP course provides knowledge of Enterprise Resource Planning (ERP) software used by companies to manage business operations such as finance, materials, and procurement. This course helps students understand real-time business processes and prepares them for corporate job roles.", learn: ["SAP FICO (Financial Accounting & Controlling)", "Financial Accounting Basics", "General Ledger", "Accounts Payable", "Accounts Receivable", "Financial Reports", "SAP MM (Material Management)", "Procurement Process", "Inventory Management", "Material Requirement Planning", "Invoice Verification", "Vendor Management"], careers: ["SAP End User", "Accounts Executive", "ERP Operator", "Business Process Associate", "Corporate Office Staff"] },
+  { id: 19, title: "Certificate in Digital Marketing",                      category: "Certificate Courses", duration: "3 Months", image: "/images/digital-marketing.jpg", popular: false, description: "Digital Marketing course helps students learn how to promote businesses, products, and services online using modern marketing strategies. Students gain practical skills in social media marketing, search engine optimization, advertising, and content creation.", learn: ["Digital Marketing Fundamentals", "Social Media Marketing (Facebook, Instagram)", "Search Engine Optimization (SEO)", "Google Ads Basics", "Content Creation Basics", "Email Marketing Basics", "Website Introduction", "Marketing Strategy Basics"], careers: ["Digital Marketing Executive", "Social Media Manager", "SEO Executive", "Content Creator", "Marketing Assistant", "Freelancer"] },
 ];
 
 const INDIVIDUAL_COURSES = [
@@ -220,190 +48,49 @@ const INDIVIDUAL_CAREERS = [
 ];
 
 const FAQS = [
-  { q: "Do you provide practical training?",   a: "Yes. All major courses include practical hands-on sessions with real software tools." },
+  { q: "Do you provide practical training?",    a: "Yes. All major courses include practical hands-on sessions with real software tools." },
   { q: "Will I receive a certificate?",         a: "Yes. Students receive a recognized course completion certificate after successfully completing the program." },
   { q: "Do you provide career guidance?",       a: "Yes. We support students with career guidance and job-oriented training support." },
   { q: "Can beginners join your courses?",      a: "Yes. Many programs are designed for beginners and start from fundamentals." },
 ];
 
 const TESTIMONIALS = [
-  { name: "Sowjanya",   course: "Photoshop",           rating: 5, location: "Belthangady", text: "I have successfully completed my photoshop course in this institution. I'm so happy with the training and the trainers. the teaching way is so polite. I highly recommend this institution to anyone who looking forward to improve their computer skills." },
-  { name: "Rinwaz",    course: "Advance excel + Tally ERP", rating: 5, location: "Belthangady",   text: "I have completed my Advance excel + Tally ERP 9.I am truly grateful to sir and staff for excellent teaching and experience is very good. It is the best training centre. The faculty is knowledgeable and explains concept in simple and understanding. faculty are very friendly. This course was very helpful for my future. The classroom is comfortable with faculty. Honestly Gurukula education is usefull to everyone's. So I suggest everyone who's reading this to join Gurukula computer education class.Thank you for your support and guidance" },
-  { name: "Mohammed Irfan", course: "Tally with GST",      rating: 5, location: "Ujire",       text: "The Tally course was very detailed and practical. I learned everything about GST entries and accounting. The certificate helped me get an accounts assistant job quickly." },
-  { name: "Divya Poojary",  course: "ADCA + AI",           rating: 5, location: "Belthangady", text: "Very good institute with experienced teachers. I joined knowing nothing about computers and completed ADCA in 6 months. The AI tools training was a great bonus — very useful for office work." },
-  { name: "Suresh Kumar",   course: "Video Editing + AI",  rating: 5, location: "Dharmasthala",text: "Learned Premiere Pro and After Effects professionally here. The trainer is very knowledgeable. I now do freelance video editing and YouTube content for local businesses." },
-  { name: "Kavitha Rao",    course: "COA + AI",            rating: 5, location: "Belthangady", text: "Perfect course for beginners. I joined after 12th and learned MS Office, internet skills and AI tools in 3 months. The government certificate gave me an edge in job interviews." },
+  { name: "Sowjanya",        course: "Photoshop",                rating: 5, location: "Belthangady", text: "I have successfully completed my photoshop course in this institution. I'm so happy with the training and the trainers. the teaching way is so polite. I highly recommend this institution to anyone who looking forward to improve their computer skills." },
+  { name: "Rinwaz",          course: "Advance excel + Tally ERP", rating: 5, location: "Belthangady", text: "I have completed my Advance excel + Tally ERP 9.I am truly grateful to sir and staff for excellent teaching and experience is very good. It is the best training centre. The faculty is knowledgeable and explains concept in simple and understanding. faculty are very friendly. This course was very helpful for my future. The classroom is comfortable with faculty. Honestly Gurukula education is usefull to everyone's. So I suggest everyone who's reading this to join Gurukula computer education class.Thank you for your support and guidance" },
+  { name: "Mohammed Irfan",  course: "Tally with GST",           rating: 5, location: "Ujire",       text: "The Tally course was very detailed and practical. I learned everything about GST entries and accounting. The certificate helped me get an accounts assistant job quickly." },
+  { name: "Divya Poojary",   course: "ADCA + AI",                rating: 5, location: "Belthangady", text: "Very good institute with experienced teachers. I joined knowing nothing about computers and completed ADCA in 6 months. The AI tools training was a great bonus — very useful for office work." },
+  { name: "Suresh Kumar",    course: "Video Editing + AI",        rating: 5, location: "Dharmasthala", text: "Learned Premiere Pro and After Effects professionally here. The trainer is very knowledgeable. I now do freelance video editing and YouTube content for local businesses." },
+  { name: "Kavitha Rao",     course: "COA + AI",                 rating: 5, location: "Belthangady", text: "Perfect course for beginners. I joined after 12th and learned MS Office, internet skills and AI tools in 3 months. The government certificate gave me an edge in job interviews." },
 ];
 
 const WHY_ITEMS = [
-  { icon: "🧑‍🏫", title: "Experienced Trainers",         desc: "Learn from skilled professionals with real-world industry experience in every subject."        },
-  { icon: "💻",    title: "Practical Hands-on Training",  desc: "Every class is built around real software tools — not just theory and slides."                  },
-  { icon: "📊",    title: "Industry-Relevant Courses",    desc: "Curriculum designed to match what employers and the market actually need today."                  },
-  { icon: "🖥️",   title: "Modern Learning Environment",  desc: "Well-equipped computer lab with the latest software and modern learning tools."                   },
-  { icon: "🎯",    title: "Job-Oriented Programs",        desc: "Every course is structured to give you real, employable skills from day one."                     },
-  { icon: "📜",    title: "Govt. Authorized Certificate", desc: "Receive an officially recognized certificate trusted by employers across all industries."          },
-  { icon: "🤝",    title: "Personalized Attention",       desc: "Small batches ensure every student gets individual focus, guidance and support."                   },
-  { icon: "💰",    title: "Affordable Course Fees",       desc: "Quality digital education at fees that are accessible to every student in the region."            },
-  { icon: "🚀",    title: "Skill Development Focus",      desc: "We build skills that translate directly to real workplace performance and career outcomes."        },
+  { icon: "clock",     title: "Industry-Experienced Trainers",    desc: "Learn directly from professionals who bring real industry knowledge, practical insights, and job-ready skills to every class." },
+  { icon: "bolt",      title: "Hands-On Practical Training",      desc: "Work on real tools, live projects, and practical exercises — not just theory or slides." },
+  { icon: "target",    title: "Industry-Relevant Curriculum",     desc: "Courses are designed based on current market demand to ensure you learn exactly what companies are hiring for." },
+  { icon: "monitor",   title: "Modern Lab & Learning Setup",      desc: "Train in a fully equipped computer lab with the latest software and a distraction-free environment." },
+  { icon: "briefcase", title: "Job-Focused Programs",             desc: "Every course is structured to make you job-ready with practical skills from day one." },
+  { icon: "badge",     title: "Government-Recognized Certification", desc: "Earn a trusted certificate that adds real value to your resume and improves your job opportunities." },
+  { icon: "users",     title: "Personalized Mentorship",          desc: "Small batch sizes ensure one-on-one guidance, doubt clearing, and continuous support." },
+  { icon: "coin",      title: "Affordable & Accessible Fees",     desc: "High-quality digital education at a price that is affordable for every student." },
+  { icon: "growth",    title: "Career & Skill Development Focus", desc: "We focus on building real-world skills that help you perform confidently in jobs and internships." },
 ];
 
-// const MARQUEE_TOOLS = [
-//   "MS Office","Tally Prime","Adobe Photoshop","Illustrator",
-//   "CorelDraw","After Effects","Premiere Pro","Power BI",
-//   "Tableau","AutoCAD","Python","HTML & CSS",
-// ];
-
-// ── HOOKS ──────────────────────────────────────────────────────────────────
-function useReduceMotion() {
-  const [rm, setRm] = useState(false);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setRm(mq.matches);
-    const fn = () => setRm(mq.matches);
-    mq.addEventListener("change", fn);
-    return () => mq.removeEventListener("change", fn);
-  }, []);
-  return rm;
-}
-
-function useScrollY() {
-  const [y, setY] = useState(0);
-  useEffect(() => {
-    const fn = () => setY(window.scrollY);
-    window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-  return y;
-}
-
-function useMousePos() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    const fn = (e) => setPos({
-      x: (e.clientX / window.innerWidth  - 0.5) * 2,
-      y: (e.clientY / window.innerHeight - 0.5) * 2,
-    });
-    window.addEventListener("mousemove", fn);
-    return () => window.removeEventListener("mousemove", fn);
-  }, []);
-  return pos;
-}
-
-function useReveal(deps = []) {
-  const [visible, setVisible] = useState({});
-  const reduceMotion = useReduceMotion();
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const nodes = document.querySelectorAll("[data-reveal]");
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setVisible((p) => ({ ...p, [entry.target.dataset.reveal]: true }));
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    nodes.forEach((n) => io.observe(n));
-    return () => io.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduceMotion, ...deps]);
-
-  const revealed = (key, delay = "0ms") => ({
-    "data-reveal": key,
-    style: reduceMotion ? {} : {
-      opacity:    visible[key] ? 1 : 0,
-      transform:  visible[key] ? "translateY(0)" : "translateY(32px)",
-      transition: `opacity 0.65s ease ${delay}, transform 0.65s ease ${delay}`,
-    },
-  });
-
-  return { visible, revealed };
-}
-
-// ── TILT HELPER ────────────────────────────────────────────────────────────
-function useTilt() {
-  const ref = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const onMove = useCallback((e) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    setTilt({
-      x: ((e.clientX - r.left) / r.width  - 0.5) * 18,
-      y: ((e.clientY - r.top)  / r.height - 0.5) * -18,
-    });
-  }, []);
-  const onLeave = useCallback(() => setTilt({ x: 0, y: 0 }), []);
-  return { ref, tilt, onMove, onLeave };
-}
-
-// ── STAR RATING ────────────────────────────────────────────────────────────
-function Stars({ n = 5, size = 14, color = "#F97316" }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: n }).map((_, i) => (
-        <svg key={i} width={size} height={size} viewBox="0 0 16 16" fill={color}>
-          <path d="M8 1l1.8 3.6 4 .6-2.9 2.8.7 4L8 10l-3.6 2 .7-4L2.2 5.2l4-.6z"/>
-        </svg>
-      ))}
-    </div>
-  );
-}
-
-// ── CARD TILT HANDLERS ─────────────────────────────────────────────────────
-const cardTiltProps = {
-  onMouseMove(e) {
-    const r = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width  - 0.5) * 8;
-    const y = ((e.clientY - r.top)  / r.height - 0.5) * -8;
-    e.currentTarget.style.transform = `translateY(-8px) rotateY(${x}deg) rotateX(${y}deg)`;
-  },
-  onMouseLeave(e) {
-    e.currentTarget.style.transform = "translateY(0) rotateY(0deg) rotateX(0deg)";
-  },
-};
-
-// ── GLOBAL STYLES ──────────────────────────────────────────────────────────
+// ── GLOBAL STYLES (injected once via a static <style> tag in index.html ideally,
+//    but kept here as a module-level constant so React never recreates it) ──────
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
-
   .font-display { font-family: 'DM Serif Display', Georgia, serif; }
 
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(28px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeInRight {
-    from { opacity: 0; transform: translateX(40px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes floatY {
-    0%,100% { transform: translateY(0px) translateZ(40px); }
-    50%      { transform: translateY(-10px) translateZ(40px); }
-  }
-  @keyframes drawLine {
-    from { stroke-dashoffset: 220; }
-    to   { stroke-dashoffset: 0; }
-  }
-  @keyframes marqueeScroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-  @keyframes pingLoop {
-    75%,100% { transform: scale(2); opacity: 0; }
-  }
-  @keyframes spinSlow {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes pulse {
-    0%,100% { opacity:1; }
-    50%      { opacity:.5; }
-  }
+  @keyframes fadeInUp   { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeInRight{ from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes floatY     { 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-10px);} }
+  @keyframes drawLine   { from{stroke-dashoffset:220;} to{stroke-dashoffset:0;} }
+  @keyframes pingLoop   { 75%,100%{transform:scale(2);opacity:0;} }
+  @keyframes pulse      { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+  @keyframes countUp    { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
 
   .anim-fadeInUp    { animation: fadeInUp    0.7s ease both; }
   .anim-fadeInUp-1  { animation: fadeInUp    0.7s ease 0.1s both; }
@@ -416,54 +103,184 @@ const GLOBAL_CSS = `
   .anim-fadeInRight { animation: fadeInRight 0.9s ease 0.3s both; }
   .anim-float       { animation: floatY      4s ease-in-out infinite; }
   .anim-float-2     { animation: floatY      5s ease-in-out 1s infinite; }
-  .anim-marquee     { animation: marqueeScroll 28s linear infinite; }
   .anim-ping        { animation: pingLoop    1.5s cubic-bezier(0,0,0.2,1) infinite; }
   .anim-pulse       { animation: pulse       2s ease-in-out infinite; }
 
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+  /* Reveal animation (applied via data-reveal attribute) */
+  [data-reveal] { opacity:0; transform:translateY(32px); transition:opacity 0.65s ease,transform 0.65s ease; }
+  [data-reveal].is-visible { opacity:1; transform:translateY(0); }
 
-  /* Smooth expand for FAQ */
-  .faq-body {
-    display: grid;
-    grid-template-rows: 0fr;
-    opacity: 0;
-    transition: grid-template-rows 0.4s ease, opacity 0.35s ease;
-  }
-  .faq-body.open {
-    grid-template-rows: 1fr;
-    opacity: 1;
-  }
-  .faq-inner { overflow: hidden; }
+  .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #f1f5f9; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  .faq-body { display:grid; grid-template-rows:0fr; opacity:0; transition:grid-template-rows 0.4s ease,opacity 0.35s ease; }
+  .faq-body.open { grid-template-rows:1fr; opacity:1; }
+  .faq-inner { overflow:hidden; }
 
-  /* Perspective on tilt containers */
-  .perspective { perspective: 1000px; }
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:#f1f5f9; }
+  ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
 
-  /* Mobile touch improvements */
-  @media (max-width: 768px) {
-    .tilt-card:hover { transform: none !important; }
-  }
+  .perspective { perspective:1000px; }
 
-  /* Course card image zoom */
-  .course-img { transition: transform 0.5s ease; }
-  .course-card:hover .course-img { transform: scale(1.08); }
+  /* GPU-composited tilt — only transform & opacity, no layout */
+  .tilt-card { transition:transform 0.18s ease, box-shadow 0.18s ease; will-change:transform; }
+  .tilt-card:hover { transform:translateY(-8px); }
+  @media(max-width:768px){ .tilt-card:hover{transform:none;} }
+
+  .course-img { transition:transform 0.5s ease; will-change:transform; }
+  .course-card:hover .course-img { transform:scale(1.08); }
+
+  /* Scroll progress bar — thin, GPU only */
+  #scroll-progress { position:fixed; top:0; left:0; height:3px; z-index:100; pointer-events:none;
+    background:linear-gradient(90deg,#1D4ED8,#f97316,#1D4ED8);
+    transform-origin:left; will-change:transform; }
 `;
+
+// ── ICON COMPONENT ─────────────────────────────────────────────────────────
+function UiIcon({ name, className = "w-6 h-6 text-blue-600" }) {
+  const p = { fill:"none", stroke:"currentColor", strokeWidth:2.2, strokeLinecap:"round", strokeLinejoin:"round" };
+  const icons = {
+    clock:     <><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></>,
+    bolt:      <path d="M13.5 3.5 7 12h5l-1.5 8.5L17 12h-5z"/>,
+    target:    <><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></>,
+    monitor:   <><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M9 19h6M12 16v3"/></>,
+    briefcase: <><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M9 7V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1M4 11h16"/></>,
+    badge:     <><circle cx="12" cy="10" r="5.5"/><path d="m9.2 14.8-1.3 5 4.1-2.1 4.1 2.1-1.3-5"/></>,
+    users:     <><circle cx="9" cy="9" r="2.7"/><circle cx="15.5" cy="8.3" r="2.2"/><path d="M4.8 18a4.6 4.6 0 0 1 8.4 0M13 17.6a3.8 3.8 0 0 1 6.2 0"/></>,
+    coin:      <><circle cx="12" cy="12" r="7.5"/><path d="M14.6 9.6a2.5 2.5 0 0 0-2.5-1.5c-1.6 0-2.8.8-2.8 2s1 1.7 2.7 2l.8.1c1.4.2 2.2.7 2.2 1.8 0 1.3-1.2 2.1-2.9 2.1a3.5 3.5 0 0 1-3-1.4M12 7.2v9.6"/></>,
+    growth:    <><path d="M5 14l5-5 4 4 5-5"/><path d="M14 4h5v5"/></>,
+  };
+  return <svg viewBox="0 0 24 24" className={className} {...p}>{icons[name] ?? null}</svg>;
+}
+
+// ── HOOKS ──────────────────────────────────────────────────────────────────
+
+// FIX: scroll progress via CSS transform on a DOM ref — no setState, no re-renders
+function useScrollProgress() {
+  useEffect(() => {
+    const bar = document.getElementById("scroll-progress");
+    if (!bar) return;
+    let raf;
+    const update = () => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const pct  = docH > 0 ? Math.min(window.scrollY / docH, 1) : 0;
+      bar.style.transform = `scaleX(${pct})`;
+      bar.style.width = "100%";
+    };
+    const onScroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
+  }, []);
+}
+
+// FIX: scroll-to-top visibility via DOM classList — no setState
+function useScrollTopBtn() {
+  useEffect(() => {
+    const btn = document.getElementById("scroll-top-btn");
+    if (!btn) return;
+    let raf;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        btn.style.opacity  = window.scrollY > 400 ? "1" : "0";
+        btn.style.pointerEvents = window.scrollY > 400 ? "auto" : "none";
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
+  }, []);
+}
+
+// FIX: IntersectionObserver for reveal — uses CSS classes, never calls setState
+function useReveal() {
+  useEffect(() => {
+    const nodes = document.querySelectorAll("[data-reveal]");
+    if (!nodes.length) return;
+    // Check prefers-reduced-motion once
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      nodes.forEach(n => n.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Apply delay from data attribute if present
+          const delay = entry.target.dataset.revealDelay || "0ms";
+          entry.target.style.transitionDelay = delay;
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    nodes.forEach(n => io.observe(n));
+    return () => io.disconnect();
+  }, []); // runs once only
+}
+
+// FIX: count-up with no perf issues — still uses setState but only 60 ticks
+function useCountUp(targetRef) {
+  const [counts, setCounts] = useState({ courses: 0, students: 0, years: 0 });
+  const fired = useRef(false);
+  useEffect(() => {
+    if (!targetRef.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || fired.current) return;
+      fired.current = true;
+      const targets = { courses: 30, students: 1000, years: 1 };
+      const steps = 60;
+      let step = 0;
+      const id = setInterval(() => {
+        step++;
+        const ease = 1 - Math.pow(1 - step / steps, 3);
+        setCounts({
+          courses:  Math.round(targets.courses  * ease),
+          students: Math.round(targets.students * ease),
+          years:    Math.round(targets.years    * ease),
+        });
+        if (step >= steps) clearInterval(id);
+      }, 1800 / steps);
+    }, { threshold: 0.3 });
+    io.observe(targetRef.current);
+    return () => io.disconnect();
+  }, [targetRef]);
+  return counts;
+}
+
+// ── STARS ─────────────────────────────────────────────────────────────────
+function Stars({ n = 5, size = 14, color = "#F97316" }) {
+  return (
+    <div className="flex gap-0.5">
+      {Array.from({ length: n }).map((_, i) => (
+        <svg key={i} width={size} height={size} viewBox="0 0 16 16" fill={color}>
+          <path d="M8 1l1.8 3.6 4 .6-2.9 2.8.7 4L8 10l-3.6 2 .7-4L2.2 5.2l4-.6z"/>
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+// FIX: card tilt now uses CSS variables on the element directly — no React state, no re-renders
+const cardTiltProps = {
+  className: "tilt-card",
+  onMouseMove(e) {
+    if (window.innerWidth < 768) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  - 0.5) * 8;
+    const y = ((e.clientY - r.top)  / r.height - 0.5) * -8;
+    e.currentTarget.style.transform = `translateY(-8px) rotateY(${x}deg) rotateX(${y}deg)`;
+  },
+  onMouseLeave(e) {
+    e.currentTarget.style.transform = "";
+  },
+};
 
 // ── SECTION HEADER ─────────────────────────────────────────────────────────
 function SectionHeader({ badge, title, highlight, subtitle, center = true, accent = "orange" }) {
   return (
     <div className={center ? "text-center" : ""}>
-      <div className={`inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest`}>
+      <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
         {badge}
       </div>
       <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
@@ -480,134 +297,91 @@ function SectionHeader({ badge, title, highlight, subtitle, center = true, accen
   );
 }
 
-// ── COURSE MODAL ───────────────────────────────────────────────────────────
-function CourseModal({ course, onClose }) {
+// ── COURSE MODAL (memoized) ─────────────────────────────────────────────────
+const CourseModal = ({ course, onClose }) => {
   useEffect(() => {
     const fn = (e) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", fn);
     document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", fn);
-      document.body.style.overflow = "";
-    };
+    return () => { document.removeEventListener("keydown", fn); document.body.style.overflow = ""; };
   }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white w-full sm:rounded-3xl sm:max-w-2xl overflow-hidden shadow-2xl max-h-[95dvh] flex flex-col"
-        style={{ animation: "fadeInUp 0.3s ease both" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* IMAGE HEADER */}
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white w-full sm:rounded-3xl sm:max-w-2xl overflow-hidden shadow-2xl max-h-[95dvh] flex flex-col"
+        style={{ animation: "fadeInUp 0.3s ease both" }} onClick={(e) => e.stopPropagation()}>
         <div className="relative h-44 sm:h-52 overflow-hidden flex-shrink-0">
-          <img
-            src={course.image || "/images/hero.jpg"}
-            alt={course.title}
-            className="w-full h-full object-cover"
-          />
+          <img src={course.image || "/images/hero.jpg"} alt={course.title} className="w-full h-full object-cover" loading="lazy"/>
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center text-white transition-all hover:scale-110"
-            aria-label="Close"
-          >
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
+          <button onClick={onClose}
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm flex items-center justify-center text-white transition-all hover:scale-110" aria-label="Close">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
           <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
             <h3 className="text-lg sm:text-xl font-black text-white leading-snug">{course.title}</h3>
             <div className="flex flex-wrap gap-2 mt-2">
               <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full border border-white/20">⏱ {course.duration}</span>
               {course.price && <span className="bg-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">{course.price}</span>}
-              <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-2.5 py-1 rounded-full border border-white/20">⭐ {course.rating || "4.5"}</span>
+              
             </div>
           </div>
         </div>
-
-        {/* SCROLLABLE BODY */}
         <div className="overflow-y-auto flex-1 p-5 sm:p-6 space-y-6">
           <p className="text-slate-600 text-sm leading-relaxed">{course.description}</p>
-
           <div>
             <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3 flex items-center gap-2">
-              <span className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center text-blue-700 text-xs">📚</span>
+              <span className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center"><UiIcon name="monitor" className="w-4 h-4 text-blue-700"/></span>
               What You Will Learn
             </h4>
             <div className="grid sm:grid-cols-2 gap-2">
               {course.learn.map((item) => (
                 <div key={item} className="flex items-start gap-2.5 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2.5">
                   <div className="w-4 h-4 rounded bg-blue-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg width="8" height="8" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </div>
                   <span className="text-xs text-blue-900 font-medium leading-snug">{item}</span>
                 </div>
               ))}
             </div>
           </div>
-
           {course.careers && (
             <div>
               <h4 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center text-orange-700 text-xs">💼</span>
+                <span className="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center"><UiIcon name="briefcase" className="w-4 h-4 text-orange-700"/></span>
                 Career Opportunities
               </h4>
               <div className="flex flex-wrap gap-2">
                 {course.careers.map((item) => (
-                  <span key={item} className="bg-orange-50 border border-orange-100 text-orange-800 text-xs font-semibold px-3 py-1.5 rounded-full">
-                    {item}
-                  </span>
+                  <span key={item} className="bg-orange-50 border border-orange-100 text-orange-800 text-xs font-semibold px-3 py-1.5 rounded-full">{item}</span>
                 ))}
               </div>
             </div>
           )}
         </div>
-
-        {/* FOOTER CTA */}
         <div className="flex-shrink-0 border-t border-slate-100 p-4 flex gap-3 bg-white">
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-xl border border-slate-200 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all"
-          >
-            Close
-          </button>
-          <a
-            href="https://wa.me/916366564639"
-            target="_blank"
-            rel="noreferrer"
-            className="flex-[2] flex items-center justify-center gap-2 rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-700 transition-all hover:-translate-y-0.5"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
+          <button onClick={onClose} className="flex-1 rounded-xl border border-slate-200 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Close</button>
+          <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
+            className="flex-[2] flex items-center justify-center gap-2 rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-700 transition-all hover:-translate-y-0.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             Apply via WhatsApp
           </a>
         </div>
       </div>
     </div>
   );
-}
+};
 
-// ── LIGHTBOX ───────────────────────────────────────────────────────────────
-function Lightbox({ photo, onClose, onPrev, onNext }) {
+// ── LIGHTBOX (memoized) ────────────────────────────────────────────────────
+const Lightbox = ({ photo, onClose, onPrev, onNext }) => {
   useEffect(() => {
     const fn = (e) => {
-      if (e.key === "Escape")     onClose();
+      if (e.key === "Escape") onClose();
       if (e.key === "ArrowRight") onNext();
       if (e.key === "ArrowLeft")  onPrev();
     };
     document.addEventListener("keydown", fn);
     document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", fn);
-      document.body.style.overflow = "";
-    };
+    return () => { document.removeEventListener("keydown", fn); document.body.style.overflow = ""; };
   }, [onClose, onPrev, onNext]);
 
   return (
@@ -615,466 +389,349 @@ function Lightbox({ photo, onClose, onPrev, onNext }) {
       <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-all hover:scale-110" onClick={onClose} aria-label="Close">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
-      <button className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-all hover:scale-110" onClick={(e) => { e.stopPropagation(); onPrev(); }} aria-label="Previous">
+      <button className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-all hover:scale-110" onClick={(e)=>{e.stopPropagation();onPrev();}} aria-label="Previous">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
       </button>
       <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
-        <img src={photo.src} alt={photo.caption} className="w-full max-h-[80dvh] object-contain rounded-2xl shadow-2xl" style={{ animation: "fadeInUp 0.2s ease both" }}/>
+        <img src={photo.src} alt={photo.caption} className="w-full max-h-[80dvh] object-contain rounded-2xl shadow-2xl" style={{ animation: "fadeInUp 0.2s ease both" }} loading="lazy"/>
         <div className="mt-3 text-center">
           <p className="text-white font-semibold text-sm sm:text-base">{photo.caption}</p>
           <p className="text-white/40 text-xs sm:text-sm mt-1">{photo.index + 1} / {PHOTOS.length}</p>
         </div>
       </div>
-      <button className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-all hover:scale-110" onClick={(e) => { e.stopPropagation(); onNext(); }} aria-label="Next">
+      <button className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-all hover:scale-110" onClick={(e)=>{e.stopPropagation();onNext();}} aria-label="Next">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
       </button>
     </div>
   );
-}
+};
 
 // ══════════════════════════════════════════════════════════════════════════
 // HOME COMPONENT
 // ══════════════════════════════════════════════════════════════════════════
 export default function Home() {
-  const [openFaq, setOpenFaq]           = useState(0);
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [lightbox, setLightbox]         = useState(null);
-  const [counted, setCounted]           = useState(false);
-  const [counts, setCounts]             = useState({ courses: 0, students: 0, years: 0 });
+  const [openFaq,         setOpenFaq]         = useState(0);
+  const [activeCategory,  setActiveCategory]  = useState("All");
+  const [selectedCourse,  setSelectedCourse]  = useState(null);
+  const [lightbox,        setLightbox]        = useState(null);
+  console.log("Active:", activeCategory);
 
-  const reduceMotion = useReduceMotion();
-  const scrollY      = useScrollY();
-  const mousePos     = useMousePos();
-  const heroTilt     = useTilt();
-  const { visible, revealed } = useReveal([activeCategory]);
-
-  // ── COUNT-UP ──────────────────────────────────────────────────────────
   const statsRef = useRef(null);
-  useEffect(() => {
-    if (counted) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      setCounted(true);
-      const targets = { courses: 15, students: 100, years: 1 };
-      const steps = 60;
-      let step = 0;
-      const id = setInterval(() => {
-        step++;
-        const ease = 1 - Math.pow(1 - step / steps, 3);
-        setCounts({
-          courses:  Math.round(targets.courses  * ease),
-          students: Math.round(targets.students * ease),
-          years:    Math.round(targets.years    * ease),
-        });
-        if (step >= steps) clearInterval(id);
-      }, 1800 / steps);
-    }, { threshold: 0.3 });
-    if (statsRef.current) io.observe(statsRef.current);
-    return () => io.disconnect();
-  }, [counted]);
+  const counts   = useCountUp(statsRef);
 
-  // ── COURSE FILTERING ──────────────────────────────────────────────────
-  const courseCategories = ["All", ...new Set(COURSES.map(c => c.category)), "Individual Courses"];
+
+  // All hooks that used to cause re-renders now use DOM refs directly
+  useScrollProgress();
+  useScrollTopBtn();
+  useReveal(); // runs once after mount; safe because it uses CSS classes
+
+  const courseCategories = useMemo(
+    () => ["All", ...new Set(COURSES.map(c => c.category)), "Individual Courses"],
+    []
+  );
+
+  const INDIVIDUAL_KEY = "Individual Courses";
+  const ALL_KEY = "All";
+
   const visibleCategories = useMemo(() => {
-    if (activeCategory === "All") return [...new Set(COURSES.map(c => c.category))];
-    if (activeCategory === "Individual Courses") return [];
-    return [activeCategory];
-  }, [activeCategory]);
+  if (activeCategory === ALL_KEY) return [...new Set(COURSES.map(c => c.category))];
+  if (activeCategory === INDIVIDUAL_KEY) return [];
+  return [activeCategory];
+}, [activeCategory]);
 
-  // ── LIGHTBOX NAVIGATION ───────────────────────────────────────────────
-  const lbNext  = useCallback(() => { if (!lightbox) return; const n = (lightbox.index + 1) % PHOTOS.length; setLightbox({ ...PHOTOS[n], index: n }); }, [lightbox]);
-  const lbPrev  = useCallback(() => { if (!lightbox) return; const n = (lightbox.index - 1 + PHOTOS.length) % PHOTOS.length; setLightbox({ ...PHOTOS[n], index: n }); }, [lightbox]);
+  const lbNext  = useCallback(() => setLightbox(p => { if (!p) return p; const n = (p.index + 1) % PHOTOS.length; return { ...PHOTOS[n], index: n }; }), []);
+  const lbPrev  = useCallback(() => setLightbox(p => { if (!p) return p; const n = (p.index - 1 + PHOTOS.length) % PHOTOS.length; return { ...PHOTOS[n], index: n }; }), []);
   const lbClose = useCallback(() => setLightbox(null), []);
 
-  // ── SCROLL PROGRESS ───────────────────────────────────────────────────
-  const progress = scrollY / Math.max((typeof document !== "undefined" ? document.documentElement.scrollHeight - window.innerHeight : 1), 1) * 100;
+  // FIX: Hero tilt via DOM ref — no state, no re-renders
+  const heroImgRef = useRef(null);
+  const onHeroMove = useCallback((e) => {
+    if (!heroImgRef.current || window.innerWidth < 1024) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  - 0.5) * 14;
+    const y = ((e.clientY - r.top)  / r.height - 0.5) * -14;
+    heroImgRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg) scale(1.02)`;
+  }, []);
+  const onHeroLeave = useCallback(() => {
+    if (heroImgRef.current) heroImgRef.current.style.transform = "";
+  }, []);
+
+  // FIX: About tilt via DOM ref
+  const aboutTiltRef = useRef(null);
+  const onAboutMove = useCallback((e) => {
+    if (!aboutTiltRef.current || window.innerWidth < 768) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  - 0.5) * 14;
+    const y = ((e.clientY - r.top)  / r.height - 0.5) * -14;
+    aboutTiltRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg) scale(1.02)`;
+  }, []);
+  const onAboutLeave = useCallback(() => {
+    if (aboutTiltRef.current) aboutTiltRef.current.style.transform = "";
+  }, []);
+
+  // ── GALLERY GRID ───────────────────────────────────────────────────────────
+const GalleryGrid = ({ onOpen }) => {
+  const [loaded, setLoaded] = useState({});
+  const imgRefs = useRef([]);
+
+  useEffect(() => {
+    // Only observe images that are NOT already natively loaded
+    const observers = [];
+
+    imgRefs.current.forEach((img, i) => {
+      if (!img) return;
+
+      // If already cached/complete, mark immediately
+      if (img.complete && img.naturalWidth > 0) {
+        setLoaded(p => ({ ...p, [i]: true }));
+        return;
+      }
+
+      // Use IntersectionObserver to trigger src swap only when near viewport
+      // This avoids the browser fetching all images at once on page load
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          img.src = img.dataset.src;   // swap in real src only now
+          io.disconnect();
+        },
+        { rootMargin: "200px 0px" }    // start loading 200px before visible
+      );
+      io.observe(img);
+      observers.push(io);
+    });
+
+    return () => observers.forEach(io => io.disconnect());
+  }, []);
+
+  return (
+    <div
+      // content-visibility: auto — browser skips layout & paint for off-screen items entirely
+      // This is the single biggest win for long pages with many images
+      className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4"
+    >
+      {PHOTOS.map((photo, i) => (
+        <div
+          key={i}
+          className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl border border-slate-200 cursor-zoom-in"
+          // content-visibility: auto per-item skips off-screen paint
+          style={{ contentVisibility: "auto", containIntrinsicSize: "0 250px" }}
+          onClick={() => onOpen({ ...photo, index: i })}
+        >
+          {/* SKELETON — shown until image loads */}
+          {!loaded[i] && (
+            <div
+              className={`w-full bg-slate-100 rounded-2xl overflow-hidden relative ${photo.tall ? "h-72" : "h-48"}`}
+              aria-hidden="true"
+            >
+              {/* Shimmer sweep — pure CSS, zero JS */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
+                  animation: "shimmer 1.4s ease infinite",
+                }}
+              />
+            </div>
+          )}
+
+          {/* REAL IMAGE
+              - data-src holds the real URL; src="" prevents any network request
+              - onLoad fires after decode → removes skeleton, reveals image
+              - decoding="async" means decode happens off main thread
+              - No will-change here — only added on :hover via CSS to avoid wasted GPU layers
+          */}
+          <img
+            ref={el => (imgRefs.current[i] = el)}
+            data-src={photo.src}
+            src=""
+            alt={photo.caption}
+            decoding="async"
+            onLoad={() => setLoaded(p => ({ ...p, [i]: true }))}
+            className={`
+              w-full object-cover
+              transition-transform duration-500 ease-out
+              hover:will-change-transform
+              ${photo.tall ? "h-72" : "h-48"}
+              ${loaded[i] ? "opacity-100" : "opacity-0 absolute inset-0"}
+            `}
+            style={{ transform: "translateZ(0)" }}   // force GPU compositing layer
+          />
+
+          {/* HOVER OVERLAY — pure CSS opacity transition, no JS */}
+          {loaded[i] && (
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl flex items-end justify-between p-4">
+              <span className="text-white text-xs sm:text-sm font-semibold">{photo.caption}</span>
+              <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2">
+                  <path strokeLinecap="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
+                </svg>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <div className="bg-slate-50 text-slate-900">
+      {/* Styles injected once — component mounts once so this is fine */}
       <style>{GLOBAL_CSS}</style>
+
       <Navbar />
 
-      {/* ── PROGRESS BAR ── */}
-      <div className="fixed top-0 left-0 z-[100] h-[3px] w-full pointer-events-none">
-        <div className="h-full bg-gradient-to-r from-blue-600 via-orange-500 to-blue-600 transition-none" style={{ width: `${Math.min(progress, 100)}%` }} />
-      </div>
+      {/* GPU-composited progress bar — no React state, moved by useScrollProgress */}
+      <div id="scroll-progress" style={{ width:"100%", transform:"scaleX(0)" }} />
 
-      {/* ════════════════════════════════════════════════════════════════
-          HERO
-      ════════════════════════════════════════════════════════════════ */}
-      <section 
-        id="home" 
-        className="scroll-mt-24 relative overflow-hidden bg-slate-50 px-4 pt-20 pb-24 md:px-8"
-      >
+      {/* ════════════ HERO ════════════ */}
+      <section id="home" className="scroll-mt-24 relative overflow-hidden bg-slate-50 px-4 pt-20 pb-24 md:px-8">
 
-          {/* BACKGROUND BLOBS */}
-          <div
-            className="pointer-events-none absolute -top-40 -left-40 h-[400px] w-[400px] sm:h-[600px] sm:w-[600px] rounded-full bg-blue-100 opacity-50 blur-3xl transition-transform duration-700"
-            style={{ transform: reduceMotion ? "none" : `translate(${mousePos.x * 20}px, ${mousePos.y * 20}px)` }}
-          />
-          <div
-            className="pointer-events-none absolute -bottom-40 -right-40 h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-orange-100 opacity-40 blur-3xl transition-transform duration-700"
-            style={{ transform: reduceMotion ? "none" : `translate(${mousePos.x * -15}px, ${mousePos.y * -15}px)` }}
-          />
-          <div
-            className="pointer-events-none absolute top-1/2 left-1/2 h-60 w-60 sm:h-80 sm:w-80 rounded-full bg-violet-100 opacity-25 blur-3xl transition-transform duration-700"
-            style={{ transform: reduceMotion ? "translate(-50%,-50%)" : `translate(calc(-50% + ${mousePos.x * 10}px), calc(-50% + ${mousePos.y * 10}px))` }}
-          />
+        {/* FIX: Static blobs — removed mouse-tracking JS transforms (were causing 60fps re-renders).
+            Subtle CSS animation instead gives visual interest with zero JS cost. */}
+        <div className="pointer-events-none absolute -top-40 -left-40 h-[400px] w-[400px] sm:h-[600px] sm:w-[600px] rounded-full bg-blue-100 opacity-50 blur-3xl" style={{ animation:"floatY 12s ease-in-out infinite" }} />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-orange-100 opacity-40 blur-3xl" style={{ animation:"floatY 15s ease-in-out 2s infinite" }} />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-60 w-60 sm:h-80 sm:w-80 rounded-full bg-violet-100 opacity-25 blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
-          {/* FLOATING PARTICLES — hidden on mobile */}
-          {!reduceMotion && [
-            { s: 6, t: "15%", l: "8%",  d: "0s",   c: "bg-blue-400"   },
-            { s: 4, t: "70%", l: "5%",  d: "0.8s", c: "bg-orange-400" },
-            { s: 5, t: "25%", l: "88%", d: "0.4s", c: "bg-violet-400" },
-            { s: 3, t: "80%", l: "85%", d: "1.2s", c: "bg-blue-300"   },
-            { s: 4, t: "45%", l: "90%", d: "0.6s", c: "bg-orange-300" },
-            { s: 6, t: "10%", l: "55%", d: "1s",   c: "bg-green-300"  },
-          ].map((p, i) => (
-            <div
-              key={i}
-              className={`pointer-events-none absolute rounded-full ${p.c} opacity-40 hidden sm:block`}
-              style={{
-                width: p.s * 4,
-                height: p.s * 4,
-                top: p.t,
-                left: p.l,
-                animation: `pulse 3s ease-in-out ${p.d} infinite`,
-              }}
-            />
-          ))}
+        {/* FIX: Removed JS-driven parallax on hero grid — was reading scrollY and
+            causing layout thrash + re-renders. Static layout is faster. */}
+        <div className="relative mx-auto max-w-7xl grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-          {/* MAIN GRID */}
-          <div
-            className="relative mx-auto max-w-7xl grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
-            style={reduceMotion ? {} : {
-              transform: typeof window !== "undefined" && window.innerWidth >= 1024
-                ? `translateY(${scrollY * 0.1}px)`
-                : "none",
-              transition: "transform 0.1s linear",
-            }}
-          >
+          {/* LEFT */}
+          <div className="w-full min-w-0">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 sm:px-4 py-1.5 text-xs font-semibold text-blue-700 anim-fadeInUp">
+              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-orange-500 anim-pulse" />
+              <span>Belthangady's Leading Computer Institute</span>
+            </div>
 
-            {/* LEFT */}
-            <div className="w-full min-w-0">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-slate-900 anim-fadeInUp-1">
+              Build Your Career With{" "}
+              <span className="text-blue-700 relative inline-block">
+                Digital Skills
+                <svg className="absolute -bottom-2 left-0 w-full" height="6" viewBox="0 0 200 6" preserveAspectRatio="none">
+                  <path d="M0 3 Q100 0 200 3" stroke="#f97316" strokeWidth="3" fill="none" strokeLinecap="round"
+                    style={{ strokeDasharray:220, strokeDashoffset:0, animation:"drawLine 1s ease 0.9s both" }} />
+                </svg>
+              </span>
+            </h1>
 
-              {/* TOP BADGE */}
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 sm:px-4 py-1.5 text-xs font-semibold text-blue-700 anim-fadeInUp">
-                <span className="h-2 w-2 flex-shrink-0 rounded-full bg-orange-500 anim-pulse" />
-                <span>Belthangady's Leading Computer Institute</span>
-              </div>
+            <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed anim-fadeInUp-3">
+              Professional computer training in Belthangady — Computer Applications, Graphic Design, Accounting, Data Analytics and Artificial Intelligence.
+            </p>
 
-              {/* HEADING */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-slate-900 anim-fadeInUp-1">
-                Build Your Career With{" "}
-                <span className="text-blue-700 relative inline-block">
-                  Digital Skills
-                  <svg
-                    className="absolute -bottom-2 left-0 w-full"
-                    height="6"
-                    viewBox="0 0 200 6"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M0 3 Q100 0 200 3"
-                      stroke="#f97316"
-                      strokeWidth="3"
-                      fill="none"
-                      strokeLinecap="round"
-                      style={{
-                        strokeDasharray: 220,
-                        strokeDashoffset: 0,
-                        animation: "drawLine 1s ease 0.9s both",
-                      }}
-                    />
-                  </svg>
-                </span>
-              </h1>
+            <div className="mt-6 flex flex-wrap gap-2 anim-fadeInUp-4">
+              {[
+                { text: "✔ Practical Training",    cls: "border-blue-200   bg-blue-50   text-blue-800"   },
+                { text: "✔ Industry Courses",      cls: "border-green-200  bg-green-50  text-green-800"  },
+                { text: "✔ Job Oriented",          cls: "border-orange-200 bg-orange-50 text-orange-800" },
+                { text: "✔ E-Max India Certified", cls: "border-violet-200 bg-violet-50 text-violet-800" },
+              ].map((pill) => (
+                <span key={pill.text} className={`rounded-full border px-3 py-1.5 text-xs font-semibold cursor-default ${pill.cls}`}>{pill.text}</span>
+              ))}
+            </div>
 
-              {/* SUBTITLE */}
-              <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed anim-fadeInUp-3">
-                Professional computer training in Belthangady — Computer Applications,
-                Graphic Design, Accounting, Data Analytics and Artificial Intelligence.
-              </p>
-
-              {/* TRUST PILLS */}
-              <div className="mt-6 flex flex-wrap gap-2 anim-fadeInUp-4">
-                {[
-                  { text: "✔ Practical Training",    cls: "border-blue-200   bg-blue-50   text-blue-800"   },
-                  { text: "✔ Industry Courses",      cls: "border-green-200  bg-green-50  text-green-800"  },
-                  { text: "✔ Job Oriented",          cls: "border-orange-200 bg-orange-50 text-orange-800" },
-                  { text: "✔ E-Max India Certified", cls: "border-violet-200 bg-violet-50 text-violet-800" },
-                ].map((pill) => (
-                  <span
-                    key={pill.text}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold cursor-default ${pill.cls}`}
-                  >
-                    {pill.text}
-                  </span>
-                ))}
-              </div>
-
-              {/* ══════════════════════════════════════════
-                  WORLD'S FIRST AI CARD — BIG BANNER
-              ══════════════════════════════════════════ */}
-              <div className="mt-7 anim-fadeInUp-5">
-                <a
-                  href="https://www.yaticorp.com/ai-card"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group relative flex items-stretch rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-orange-200"
-                  style={{ background: "linear-gradient(135deg, #fff7ed 0%, #fff3e0 50%, #fef9f0 100%)" }}
-                >
-                  {/* shimmer sweep on hover */}
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none z-10" />
-
-                  {/* LEFT accent column */}
-                  <div
-                    className="flex-shrink-0 flex flex-col items-center justify-center gap-1.5 px-4 sm:px-5 py-5"
-                    style={{ background: "linear-gradient(180deg, #f59e0b 0%, #ea580c 100%)" }}
-                  >
-                    {/* globe icon */}
-                    <span className="text-3xl sm:text-4xl drop-shadow-sm">🌍</span>
-                    {/* vertical text label */}
-                    <div className="flex flex-col items-center gap-0.5 mt-1">
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] text-white/90">World's</span>
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] text-white/90">First</span>
-                    </div>
-                  </div>
-
-                  {/* MAIN content */}
-                  <div className="flex-1 min-w-0 px-4 sm:px-5 py-4 flex flex-col justify-center gap-2">
-
-                    {/* badge row */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="inline-flex items-center gap-1 bg-orange-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap tracking-wide">
-                        ✨ Exclusive
-                      </span>
-                      <span className="inline-flex items-center gap-1 bg-green-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap tracking-wide">
-                        🆕 New Launch
-                      </span>
-                    </div>
-
-                    {/* headline */}
-                    <div>
-                      <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">
-                        AI Card
-                      </p>
-                      <p className="text-sm sm:text-base font-bold text-orange-600 leading-tight">
-                        Now Available at Gurukula
-                      </p>
-                    </div>
-
-                    {/* description */}
-                    <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                      Unlock <span className="font-bold text-slate-700">50+ AI tools</span>, exclusive benefits &amp; digital resources with every course enrollment.
-                    </p>
-
-                    {/* CTA link */}
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-xs font-bold text-orange-600 group-hover:underline underline-offset-2">
-                        Learn More
-                      </span>
-                      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        className="text-orange-500 group-hover:translate-x-0.5 transition-transform duration-200" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                      </svg>
-                      <span className="text-xs text-slate-300 mx-1">|</span>
-                      <span className="text-xs font-semibold text-slate-500">Activate Today</span>
-                    </div>
-                  </div>
-
-                  {/* RIGHT arrow column */}
-                  <div
-                    className="flex-shrink-0 w-9 sm:w-10 flex items-center justify-center"
-                    style={{ background: "linear-gradient(180deg, #f59e0b 0%, #ea580c 100%)" }}
-                  >
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5"
-                      className="group-hover:translate-x-0.5 transition-transform duration-200">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+            {/* AI CARD BANNER */}
+            <div className="mt-7 anim-fadeInUp-5">
+              <a href="https://www.yaticorp.com/ai-card" target="_blank" rel="noreferrer"
+                className="group relative flex items-stretch rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-orange-200"
+                style={{ background:"linear-gradient(135deg,#fff7ed 0%,#fff3e0 50%,#fef9f0 100%)" }}>
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none z-10" />
+                <div className="flex-shrink-0 flex flex-col items-center justify-center gap-1.5 px-4 sm:px-5 py-5" style={{ background:"linear-gradient(180deg,#f59e0b 0%,#ea580c 100%)" }}>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 6.5C4 5.7 4.7 5 5.5 5H10c1.1 0 2 .9 2 2v12c0-1.1-.9-2-2-2H5.5C4.7 17 4 16.3 4 15.5v-9z"/>
+                      <path d="M20 6.5c0-.8-.7-1.5-1.5-1.5H14c-1.1 0-2 .9-2 2v12c0-1.1.9-2 2-2h4.5c.8 0 1.5-.7 1.5-1.5v-9z"/>
                     </svg>
                   </div>
-
-                </a>
-              </div>
-
-              {/* CTA BUTTONS */}
-              <div className="mt-6 flex flex-col sm:flex-row gap-3 anim-fadeInUp-6">
-                <a
-                  href="https://wa.me/916366564639"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group relative overflow-hidden rounded-xl bg-orange-500 px-7 py-3.5 font-bold text-white shadow-sm text-center transition-all duration-300 hover:shadow-orange-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  <span className="relative z-10">WhatsApp Enquiry</span>
-                  <div className="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                </a>
-                <a
-                  href="#courses"
-                  className="group rounded-xl border border-slate-300 bg-white px-7 py-3.5 font-bold text-slate-800 hover:bg-slate-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-300 text-center hover:-translate-y-0.5 active:translate-y-0"
-                >
-                  Explore Courses
-                  <span className="inline-block ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </a>
-              </div>
-
-              {/* STAT COUNTER */}
-              <div
-                ref={statsRef}
-                className="mt-8 grid grid-cols-3 divide-x divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm anim-fadeInUp-75"
-              >
-                {[
-                  { num: counts.courses,  suffix: "+", label: "Courses"    },
-                  { num: counts.students, suffix: "+", label: "Students"   },
-                  { num: counts.years,    suffix: "+", label: "Years Exp." },
-                ].map((s) => (
-                  <div key={s.label} className="py-4 text-center hover:bg-blue-50 transition-colors duration-300">
-                    <p className="text-2xl sm:text-3xl font-black text-blue-900 tabular-nums">{s.num}{s.suffix}</p>
-                    <p className="mt-1 text-xs text-slate-500 font-medium">{s.label}</p>
+                  <div className="flex flex-col items-center gap-0.5 mt-1">
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] text-white/90">World's</span>
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] text-white/90">First</span>
                   </div>
-                ))}
-              </div>
+                </div>
+                <div className="flex-1 min-w-0 px-4 sm:px-5 py-4 flex flex-col justify-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="inline-flex items-center gap-1 bg-orange-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap tracking-wide">✨ Exclusive</span>
+                    <span className="inline-flex items-center gap-1 bg-green-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap tracking-wide">🆕 New Launch</span>
+                  </div>
+                  <div>
+                    <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">AI Card</p>
+                    <p className="text-sm sm:text-base font-bold text-orange-600 leading-tight">Now Available at Gurukula</p>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">Unlock <span className="font-bold text-slate-700">50+ AI tools</span>, exclusive benefits &amp; digital resources with every course enrollment.</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-xs font-bold text-orange-600 group-hover:underline underline-offset-2">Learn More</span>
+                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-orange-500 group-hover:translate-x-0.5 transition-transform duration-200" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    <span className="text-xs text-slate-300 mx-1">|</span>
+                    <span className="text-xs font-semibold text-slate-500">Activate Today</span>
+                  </div>
+                </div>
+                <div className="flex-shrink-0 w-9 sm:w-10 flex items-center justify-center" style={{ background:"linear-gradient(180deg,#f59e0b 0%,#ea580c 100%)" }}>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.5" className="group-hover:translate-x-0.5 transition-transform duration-200"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </div>
+              </a>
             </div>
 
-            {/* RIGHT — 3D TILT IMAGE */}
-            <div
-              ref={heroTilt.ref}
-              className="relative mt-10 lg:mt-0 cursor-default perspective anim-fadeInRight"
-              onMouseMove={heroTilt.onMove}
-              onMouseLeave={heroTilt.onLeave}
-            >
-              <div
-                style={{
-                  transform: reduceMotion
-                    ? "none"
-                    : `rotateY(${heroTilt.tilt.x}deg) rotateX(${heroTilt.tilt.y}deg) scale(${(heroTilt.tilt.x || heroTilt.tilt.y) ? 1.02 : 1})`,
-                  transition: "transform 0.15s ease",
-                  transformStyle: "preserve-3d",
-                }}
-              >
-                <div className="mt-4 ml-4 lg:mt-0 lg:ml-0">
-                  <img
-                    src="/images/hero.jpg"
-                    alt="Computer Training at Gurukula"
-                    className="w-full rounded-3xl shadow-2xl object-cover aspect-[4/3]"
-                    style={{ transform: "translateZ(20px)" }}
-                    loading="eager"
-                  />
-                </div>
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 anim-fadeInUp-6">
+              <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
+                className="group relative overflow-hidden rounded-xl bg-orange-500 px-7 py-3.5 font-bold text-white shadow-sm text-center transition-all duration-300 hover:shadow-orange-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+                <span className="relative z-10">WhatsApp Enquiry</span>
+                <div className="absolute inset-0 bg-orange-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              </a>
+              <a href="#courses"
+                className="group rounded-xl border border-slate-300 bg-white px-7 py-3.5 font-bold text-slate-800 hover:bg-slate-50 hover:border-blue-300 hover:text-blue-700 transition-all duration-300 text-center hover:-translate-y-0.5 active:translate-y-0">
+                Explore Courses
+                <span className="inline-block ml-1 transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </div>
 
-                {/* floating badge — bottom left */}
-                <div
-                  className="absolute bottom-0 left-0 sm:-left-4 translate-y-4 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 shadow-xl anim-float"
-                  style={{ transform: "translateZ(40px)" }}
-                >
-                  <p className="text-xs sm:text-sm font-bold text-slate-900">AI • Design • Accounting • IT</p>
-                  <div className="mt-2 flex gap-1.5">
-                    {["bg-blue-600", "bg-orange-500", "bg-green-600", "bg-violet-600"].map((c) => (
-                      <span key={c} className={`h-2 w-2 rounded-full ${c}`} />
-                    ))}
-                  </div>
+            {/* STAT COUNTER */}
+            <div ref={statsRef}
+              className="mt-8 grid grid-cols-3 divide-x divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm anim-fadeInUp-75">
+              {[
+                { num: counts.courses,  suffix: "+", label: "Courses"    },
+                { num: counts.students, suffix: "+", label: "Students"   },
+                { num: counts.years,    suffix: "+", label: "Years Exp." },
+              ].map((s) => (
+                <div key={s.label} className="py-4 text-center hover:bg-blue-50 transition-colors duration-300">
+                  <p className="text-2xl sm:text-3xl font-black text-blue-900 tabular-nums">{s.num}{s.suffix}</p>
+                  <p className="mt-1 text-xs text-slate-500 font-medium">{s.label}</p>
                 </div>
-
-                {/* floating badge — top left */}
-                <div
-                  className="absolute top-0 left-0 sm:-left-4 -translate-y-3 rounded-xl border border-slate-100 bg-white px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-lg text-xs font-bold text-slate-700 anim-float-2"
-                  style={{ transform: "translateZ(50px)" }}
-                >
-                  🎓 100+ Students Trained
-                </div>
-
-                {/* floating badge — top right: AI Card */}
-                <div
-                  className="absolute top-0 right-0 sm:-right-4 -translate-y-3 rounded-xl overflow-hidden shadow-xl anim-float"
-                  style={{
-                    transform: "translateZ(55px)",
-                    animationDelay: "0.7s",
-                    background: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
-                  }}
-                >
-                  <div className="px-3 sm:px-4 py-2 sm:py-3 text-white">
-                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-80 leading-tight">World's First</p>
-                    <p className="text-sm sm:text-base font-black leading-tight">🌍 AI Card</p>
-                    <p className="text-[9px] sm:text-[10px] text-white/75 font-semibold mt-0.5 leading-tight">Activate Now →</p>
-                  </div>
-                </div>
-
-              </div>
+              ))}
             </div>
           </div>
-        </section>
 
-      {/* ── MARQUEE ── */}
-      {/* <div className="relative overflow-hidden bg-blue-700 py-3.5 border-y border-blue-800">
-        <div className="flex anim-marquee whitespace-nowrap gap-0 will-change-transform">
-          {[...MARQUEE_TOOLS, ...MARQUEE_TOOLS, ...MARQUEE_TOOLS].map((tool, i) => (
-            <span key={i} className="inline-flex items-center gap-2 px-6 sm:px-8 text-sm font-semibold text-blue-100">
-              <span className="h-1.5 w-1.5 rounded-full bg-orange-400 flex-shrink-0" />
-              {tool}
-            </span>
-          ))}
-        </div>
-      </div> */}
-
-      {/* ════════════════════════════════════════════════════════════════
-          ABOUT
-      ════════════════════════════════════════════════════════════════ */}
-      <section id="about" className="bg-white py-20 sm:py-24 px-4 sm:px-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* LEFT */}
-            <div className="anim-fadeInUp">
-              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
-                🏫 Est. Belthangady
-              </div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
-                About <span className="text-blue-700">Gurukula</span>
-              </h2>
-              <div className="mt-4 w-12 h-1 bg-orange-500 rounded-full" />
-              <p className="mt-6 text-base sm:text-lg text-slate-500 leading-relaxed">
-                Gurukula Computer Training Centre is a professional computer education institute dedicated to delivering quality training in computer technology, digital skills, and modern software tools — empowering students for the digital age.
-              </p>
-              <p className="mt-4 text-base sm:text-lg text-slate-500 leading-relaxed">
-                We combine theoretical knowledge with practical hands-on learning across Computer Applications, Office Automation, Tally, Graphic Design, Video Editing, AI and Data Analytics.
-              </p>
-
-              {/* quick stats row */}
-              <div className="mt-8 grid grid-cols-3 gap-4">
-                {[
-                  { icon: "🎓", val: "100+", lab: "Students" },
-                  { icon: "📚", val: "15+",   lab: "Courses"  },
-                  { icon: "⭐", val: "4.9",   lab: "Rating"   },
-                ].map((s) => (
-                  <div key={s.lab} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center hover:border-blue-200 hover:bg-blue-50 transition-all duration-200">
-                    <div className="text-2xl mb-1">{s.icon}</div>
-                    <p className="text-xl font-black text-slate-900">{s.val}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{s.lab}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* RIGHT — 3D image */}
-            <div className="relative perspective anim-fadeInRight"
-              onMouseMove={(e) => {
-                const r = e.currentTarget.getBoundingClientRect();
-                const x = ((e.clientX - r.left) / r.width  - 0.5) * 14;
-                const y = ((e.clientY - r.top)  / r.height - 0.5) * -14;
-                e.currentTarget.querySelector(".tilt-inner").style.transform = `rotateY(${x}deg) rotateX(${y}deg) scale(1.02)`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.querySelector(".tilt-inner").style.transform = "rotateY(0deg) rotateX(0deg) scale(1)";
-              }}
-            >
-              <div className="tilt-inner" style={{ transition: "transform 0.15s ease", transformStyle: "preserve-3d" }}>
-                <img src="/images/about.jpg" alt="Gurukula Computer Training Centre"
-                  className="w-full rounded-3xl shadow-2xl object-cover aspect-[4/3]" style={{ transform: "translateZ(10px)" }} loading="lazy" />
-                <div className="absolute -bottom-4 -left-4 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-xl anim-float" style={{ transform: "translateZ(40px)" }}>
-                  <p className="text-xs text-slate-500 font-semibold">✅ Certified Institute</p>
+          {/* RIGHT — 3D tilt image via DOM ref */}
+          <div className="relative mt-10 lg:mt-0 cursor-default perspective anim-fadeInRight"
+            onMouseMove={onHeroMove} onMouseLeave={onHeroLeave}>
+            <div ref={heroImgRef} style={{ transition:"transform 0.15s ease", transformStyle:"preserve-3d" }}>
+              <img src="/images/hero.jpg" alt="Computer Training at Gurukula"
+                className="w-full rounded-3xl shadow-2xl object-cover aspect-[4/3]"
+                loading="eager" fetchpriority="high" decoding="async" />
+              <div className="absolute bottom-0 left-0 sm:-left-4 translate-y-4 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 shadow-xl anim-float">
+                <p className="text-xs sm:text-sm font-bold text-slate-900">AI • Design • Accounting • IT</p>
+                <div className="mt-2 flex gap-1.5">
+                  {["bg-blue-600","bg-orange-500","bg-green-600","bg-violet-600"].map((c) => (
+                    <span key={c} className={`h-2 w-2 rounded-full ${c}`} />
+                  ))}
                 </div>
-                <div className="absolute -top-4 -right-4 bg-orange-500 rounded-2xl px-4 py-3 shadow-lg anim-float-2" style={{ transform: "translateZ(50px)" }}>
-                  <p className="text-sm font-bold text-white">⭐ 4.8 Rating</p>
+              </div>
+              <div className="absolute top-0 left-0 sm:-left-4 -translate-y-3 rounded-xl border border-slate-100 bg-white px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-lg text-xs font-bold text-slate-700 anim-float-2">
+                <div className="flex items-center gap-1.5">
+                  <UiIcon name="users" className="w-4 h-4 text-slate-700"/>
+                  <span>1000+ Students Trained</span>
+                </div>
+              </div>
+              <div className="absolute top-0 right-0 sm:-right-4 -translate-y-3 rounded-xl overflow-hidden shadow-xl anim-float"
+                style={{ animationDelay:"0.7s", background:"linear-gradient(135deg,#f59e0b 0%,#ea580c 100%)" }}>
+                <div className="px-3 sm:px-4 py-2 sm:py-3 text-white">
+                  <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-80 leading-tight">World's First</p>
+                  <div className="flex items-center gap-1.5">
+                    <UiIcon name="badge" className="w-4 h-4 text-white"/>
+                    <UiIcon name="monitor" className="w-4 h-4 text-white"/>
+                    <span className="text-sm sm:text-base font-black leading-tight">AI Card</span>
+                  </div>
+                  <p className="text-[9px] sm:text-[10px] text-white/75 font-semibold mt-0.5 leading-tight">Activate Now →</p>
                 </div>
               </div>
             </div>
@@ -1082,24 +739,214 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          VISION & MISSION
-      ════════════════════════════════════════════════════════════════ */}
+      {/* ════════════ ABOUT ════════════ */}
+      <section
+        id="about"
+        className="bg-gradient-to-b from-slate-50 to-blue-100/40 py-24 sm:py-28 px-4 sm:px-6 overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+
+            {/* LEFT CONTENT */}
+            <div className="anim-fadeInUp">
+
+              {/* Badge */}
+              <div className="inline-flex items-center gap-3 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-5 py-2 rounded-full mb-6 uppercase tracking-widest shadow-sm">
+                <UiIcon name="monitor" className="w-5 h-5 text-blue-700"/> 
+                <span>Est. Belthangady</span>
+              </div>
+
+              {/* Heading */}
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tight">
+                About <span className="text-blue-700">Gurukula</span>
+              </h2>
+
+              {/* Accent Line */}
+              <div className="mt-5 w-16 h-[3px] bg-gradient-to-r from-blue-600 to-orange-400 rounded-full" />
+
+              {/* Paragraphs */}
+              <p className="mt-7 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl">
+                Gurukula Computer Training Centre is a professional computer education institute dedicated to delivering quality training in computer technology, digital skills, and modern software tools — empowering students for the digital age.
+              </p>
+
+              <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl">
+                We combine theoretical knowledge with practical hands-on learning across Computer Applications, Office Automation, Tally, Graphic Design, Video Editing, AI and Data Analytics.
+              </p>
+
+              {/* STATS */}
+              <div className="mt-10 grid grid-cols-3 gap-5">
+                {[
+                  { icon:"users",   val:"1000+", lab:"Students" },
+                  { icon:"monitor", val:"30+",   lab:"Courses"  },
+                  { icon:"badge",   val:"5",     lab:"Rating"   },
+                ].map((s) => (
+                  <div
+                    key={s.lab}
+                    className="group rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 transition-all duration-300"
+                  >
+                    <div className="flex justify-center mb-3">
+                      <div className="p-3 rounded-xl bg-blue-50 group-hover:bg-blue-100 transition">
+                        {/* 🔥 Increased icon size */}
+                        <UiIcon name={s.icon} className="w-8 h-8 text-blue-600"/>
+                      </div>
+                    </div>
+
+                    <p className="text-2xl font-extrabold text-slate-900">{s.val}</p>
+                    <p className="text-xs text-slate-500 mt-1 tracking-wide">{s.lab}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT IMAGE */}
+            <div
+              className="relative perspective anim-fadeInRight"
+              onMouseMove={onAboutMove}
+              onMouseLeave={onAboutLeave}
+            >
+              <div
+                ref={aboutTiltRef}
+                style={{ transition:"transform 0.15s ease", transformStyle:"preserve-3d" }}
+                className="relative"
+              >
+                <img
+                  src="/images/about.jpg"
+                  alt="Gurukula Computer Training Centre"
+                  className="w-full rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] object-cover aspect-[4/3]"
+                  loading="lazy"
+                />
+
+                {/* Glass overlay glow */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+
+                {/* Bottom Badge */}
+                <div className="absolute -bottom-5 -left-5 bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl px-5 py-3 shadow-xl">
+                  <p className="text-xs font-bold text-slate-900 leading-none mb-1">✅ Certified Institute</p>
+                </div>
+
+                {/* Top Badge */}
+                <div className="absolute -top-5 -right-5 bg-gradient-to-r from-orange-500 to-orange-400 rounded-2xl px-5 py-3 shadow-lg">
+                  <p className="text-sm font-bold text-white">⭐ 4.8 Rating</p>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════ FOUNDER ════════════ */}
+      <section id="founder" className="scroll-mt-24 bg-slate-50 py-20 sm:py-24 px-4 sm:px-8 relative overflow-hidden">
+        <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-40" />
+        <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-72 h-72 bg-orange-100 rounded-full blur-3xl opacity-35" />
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center mb-14" data-reveal data-reveal-delay="0ms">
+            <SectionHeader badge="👤 Meet the Founder" title="The Person" highlight="Behind Gurukula"
+              subtitle="Passionate about making quality digital education accessible to every student in Karnataka." />
+          </div>
+          <div data-reveal data-reveal-delay="100ms" className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+            <div className="h-2 w-full" style={{ background:"linear-gradient(90deg,#1D4ED8 0%,#f97316 50%,#1D4ED8 100%)" }} />
+            <div className="grid lg:grid-cols-[380px_1fr] gap-0">
+              {/* LEFT — photo */}
+              <div className="relative flex flex-col items-center justify-start gap-6 px-8 py-10 lg:py-12"
+                style={{ background:"linear-gradient(160deg,#0F172A 0%,#1E3A8A 60%,#1D4ED8 100%)" }}>
+                <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-white/5 pointer-events-none" />
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-white/[0.04] pointer-events-none" />
+                <div className="relative z-10 mt-2">
+                  <div className="w-44 h-44 sm:w-52 sm:h-52 rounded-full p-1 bg-gradient-to-br from-amber-400 via-orange-500 to-blue-600 shadow-2xl">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-slate-800 border-4 border-slate-900">
+                      <img src="/images/founder1.jpg" alt="Santhosh — Founder, Gurukula Computer"
+                        className="w-full h-full object-cover object-top" loading="lazy"
+                        onError={(e) => { e.target.style.display="none"; e.target.nextSibling.style.display="flex"; }} />
+                      <div className="w-full h-full hidden items-center justify-center bg-gradient-to-br from-blue-700 to-blue-900">
+                        <span className="text-5xl font-black text-white">S</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-12 h-12 rounded-full bg-green-500 border-4 border-slate-900 flex items-center justify-center shadow-lg">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                </div>
+                <div className="relative z-10 text-center">
+                  <h3 className="text-2xl sm:text-3xl font-black text-white">Santhosh</h3>
+                  <p className="text-orange-400 font-bold text-sm mt-1">Founder &amp; Director</p>
+                  <p className="text-blue-300 text-xs mt-0.5">Gurukula Computer, Belthangady</p>
+                </div>
+                <div className="relative z-10 w-full grid grid-cols-3 gap-2 mt-2">
+                  {[{val:"1000+",lab:"Students"},{val:"2",lab:"Locations"},{val:"30+",lab:"Courses"}].map((s) => (
+                    <div key={s.lab} className="rounded-xl bg-white/10 border border-white/15 py-3 text-center backdrop-blur-sm hover:bg-white/20 transition-colors duration-200">
+                      <p className="text-lg sm:text-xl font-black text-white">{s.val}</p>
+                      <p className="text-[10px] text-blue-300 font-semibold mt-0.5">{s.lab}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="relative z-10 inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-xs font-semibold text-blue-200">
+                  <span>📍</span> Dharmasthala, Karnataka
+                </div>
+              </div>
+
+              {/* RIGHT — bio */}
+              <div className="flex flex-col justify-center px-6 sm:px-10 py-10 lg:py-12 gap-7">
+                <div>
+                  <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-widest mb-4">🎓 About Me</div>
+                  <p className="text-slate-700 text-sm sm:text-base leading-relaxed">
+                    I'm <span className="font-black text-slate-900">Santhosh</span>, founder of{" "}
+                    <span className="font-bold text-blue-700">ICON – National Board of Computer Education</span> in Ujire and{" "}
+                    <span className="font-bold text-blue-700">Gurukula Computer</span> in Belthangady. Hailing from Dharmasthala, Karnataka, I began as a Computer Trainer with 2 years of hands-on experience before launching ICON at age <span className="font-black text-orange-500">23</span>.
+                  </p>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    { icon:"🏆", color:"bg-amber-50 border-amber-200", titleColor:"text-amber-700", title:"Top 3 in Karnataka",       desc:"Ranked among Karnataka's Top 3 Computer Training Institutes by NBCE" },
+                    { icon:"🎓", color:"bg-blue-50 border-blue-200",   titleColor:"text-blue-700",  title:"1,000+ Students Trained",   desc:"Across two locations — Ujire and Belthangady" },
+                    { icon:"💡", color:"bg-green-50 border-green-200", titleColor:"text-green-700", title:"30+ Job-Ready Courses",      desc:"AI Tools, Graphic Design, Tally, GST and beyond" },
+                    { icon:"",  color:"bg-orange-50 border-orange-200",titleColor:"text-orange-700",title:"World's First AI Card",      desc:"Exclusive AI Foundation, 50+ Tools, Power BI, Tableau, internships & scholarships" },
+                  ].map((item) => (
+                    <div key={item.title} className={`flex items-start gap-3 rounded-2xl border ${item.color} p-4 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200`}>
+                      <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                      <div className="min-w-0">
+                        <p className={`text-xs font-black uppercase tracking-wide ${item.titleColor}`}>{item.title}</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="relative overflow-hidden rounded-2xl px-5 py-4 border border-blue-100 bg-blue-50">
+                  <div className="absolute -top-4 -right-4 text-6xl opacity-10 pointer-events-none select-none">"</div>
+                  <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-2">My Mission</p>
+                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed italic">"Equip every student with essential digital skills for success, making top-tier education accessible to all."</p>
+                  <p className="mt-2 text-xs font-bold text-slate-500">— Santhosh, Founder</p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
+                    className="group relative overflow-hidden flex items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-3 font-bold text-white text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-200">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Connect on WhatsApp
+                  </a>
+                  <a href="#courses"
+                    className="group flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-white px-5 py-3 font-bold text-blue-700 text-sm hover:bg-blue-700 hover:text-white hover:border-blue-700 transition-all duration-200 hover:-translate-y-0.5">
+                    Explore Our Courses<span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════ VISION & MISSION ════════════ */}
       <section id="vision-mission" className="scroll-mt-24 py-20 sm:py-24 px-4 sm:px-8 bg-slate-50 relative overflow-hidden">
         <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-50" />
         <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-80 h-80 bg-orange-100 rounded-full blur-3xl opacity-40" />
-
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-14 anim-fadeInUp">
             <SectionHeader badge="🌟 Our Purpose" title="Vision &" highlight="Mission"
               subtitle="Empowering students with digital skills, practical knowledge and career-oriented training for the modern world." />
           </div>
-
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* VISION */}
-            <div className="group relative overflow-hidden rounded-3xl p-8 sm:p-11 text-white cursor-default transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-              style={{ background: "linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}
-              {...cardTiltProps}>
+            <div {...cardTiltProps} className={`tilt-card group relative overflow-hidden rounded-3xl p-8 sm:p-11 text-white cursor-default hover:shadow-2xl`}
+              style={{ background:"linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}>
               <div className="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-white/5 pointer-events-none" />
               <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-white/[0.04] pointer-events-none" />
               <div className="relative z-10">
@@ -1110,28 +957,18 @@ export default function Home() {
                   To become a trusted and leading computer training institute that empowers students with digital knowledge, technical skills, and innovative thinking — creating skilled professionals ready for the modern technology-driven world.
                 </p>
                 <div className="mt-8 inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-4 py-2 text-xs font-semibold text-blue-100">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                  Leading Digital Education
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400" /> Leading Digital Education
                 </div>
               </div>
             </div>
-
-            {/* MISSION */}
-            <div className="group relative overflow-hidden bg-white border border-slate-200 rounded-3xl p-8 sm:p-11 cursor-default transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-blue-200"
-              {...cardTiltProps}>
+            <div {...cardTiltProps} className={`tilt-card group relative overflow-hidden bg-white border border-slate-200 rounded-3xl p-8 sm:p-11 cursor-default hover:shadow-2xl hover:border-blue-200`}>
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/60 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl pointer-events-none" />
               <div className="relative z-10">
                 <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-2xl mb-5">🚀</div>
                 <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">Our Mission</h3>
                 <div className="w-10 h-1 bg-blue-700 rounded-full mb-5" />
                 <ul className="space-y-3">
-                  {[
-                    "Provide high-quality computer education with practical training.",
-                    "Help students develop industry-relevant digital skills.",
-                    "Introduce modern technologies such as Artificial Intelligence and Data Analytics.",
-                    "Support students with career guidance and job-oriented training.",
-                    "Create opportunities for students to build successful careers.",
-                  ].map((item) => (
+                  {["Provide high-quality computer education with practical training.", "Help students develop industry-relevant digital skills.", "Introduce modern technologies such as Artificial Intelligence and Data Analytics.", "Support students with career guidance and job-oriented training.", "Create opportunities for students to build successful careers."].map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-5 h-5 rounded-md bg-blue-50 border border-blue-200 flex items-center justify-center mt-0.5">
                         <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1D4ED8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -1143,13 +980,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          {/* CORE VALUES */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { icon: "💡", title: "Innovation",  desc: "Embracing new technologies every day"        },
-              { icon: "🤝", title: "Integrity",   desc: "Honest and transparent education always"     },
-              { icon: "🏆", title: "Excellence",  desc: "Striving for the highest quality training"   },
+              { icon:"💡", title:"Innovation", desc:"Embracing new technologies every day"      },
+              { icon:"🤝", title:"Integrity",  desc:"Honest and transparent education always"   },
+              { icon:"🏆", title:"Excellence", desc:"Striving for the highest quality training"  },
             ].map((v) => (
               <div key={v.title} className="group flex items-center gap-4 bg-white border border-slate-200 rounded-2xl px-5 sm:px-6 py-5 hover:border-blue-200 hover:bg-blue-50 hover:-translate-y-1 transition-all duration-300 cursor-default">
                 <div className="text-3xl flex-shrink-0">{v.icon}</div>
@@ -1163,127 +998,88 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          WHY CHOOSE US
-      ════════════════════════════════════════════════════════════════ */}
-      <section id="why-choose-us" className="scroll-mt-24 py-20 sm:py-24 px-4 sm:px-8 bg-white relative overflow-hidden">
-        <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-40" />
-        <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-80 h-80 bg-orange-100 rounded-full blur-3xl opacity-35" />
-
+      {/* ════════════ WHY CHOOSE US ════════════ */}
+      <section id="why-choose-us" className="scroll-mt-24 py-20 sm:py-24 px-4 sm:px-8 bg-gradient-to-b from-white to-blue-50 relative overflow-hidden">
+        <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-80 h-80 bg-blue-200 rounded-full blur-3xl opacity-30" />
+        <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-80 h-80 bg-orange-200 rounded-full blur-3xl opacity-30" />
         <div className="mx-auto max-w-7xl">
-          <div className="text-center mb-14" {...revealed("why-hdr")}>
+          <div className="text-center mb-16" data-reveal data-reveal-delay="0ms">
             <SectionHeader badge="⭐ Why Choose Us" title="Why Students Choose" highlight="Gurukula"
-              subtitle="Practical training, industry-relevant courses and career-oriented learning to help students succeed in the digital world." />
+              subtitle="We focus on real skills, not just theory — helping you become job-ready from day one." />
           </div>
-
-          <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {WHY_ITEMS.map((item, i) => (
-              <div key={item.title}
-                {...revealed(`why-${i}`, `${i * 50}ms`)}
-                className="group relative overflow-hidden bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 cursor-default transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-blue-200"
-                {...cardTiltProps}>
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none" />
-                <div className="absolute top-5 right-5 w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-blue-700 flex items-center justify-center transition-colors duration-300">
-                  <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors duration-300">{String(i + 1).padStart(2, "0")}</span>
+              <div key={item.title} data-reveal data-reveal-delay={`${i * 60}ms`}
+                {...cardTiltProps}
+                className="tilt-card group relative bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 hover:shadow-2xl hover:border-blue-300">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 rounded-2xl bg-gradient-to-br from-blue-100/40 to-transparent pointer-events-none" />
+                <div className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-600 flex items-center justify-center transition">
+                  <span className="text-xs font-bold text-slate-400 group-hover:text-white">{String(i+1).padStart(2,"0")}</span>
                 </div>
                 <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-700 flex items-center justify-center text-2xl mb-4 transition-colors duration-300">{item.icon}</div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-2 pr-8">{item.title}</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                  <div className="w-14 h-14 rounded-xl bg-blue-100 group-hover:bg-white shadow-sm flex items-center justify-center mb-4 transition">
+                    <UiIcon className="w-7 h-7 text-blue-600" name={item.icon} />
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* CTA BANNER */}
-          <div className="mt-8 relative overflow-hidden rounded-2xl px-6 sm:px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
-            style={{ background: "linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}>
-            <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
-            <div className="relative z-10">
-              <p className="text-lg sm:text-xl font-black text-white">Ready to start your digital career?</p>
-              <p className="text-sm text-blue-200 mt-1">Join 100+ students already trained at Gurukula</p>
+          <div className="mt-14 relative overflow-hidden rounded-3xl px-6 sm:px-10 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl"
+            style={{ background:"linear-gradient(135deg,#020617 0%,#1E3A8A 60%,#2563EB 100%)" }}>
+            <div className="absolute -top-16 -right-16 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 max-w-lg">
+              <p className="text-2xl sm:text-3xl font-extrabold text-white">Start Your Digital Career Today 🚀</p>
+              <p className="text-blue-200 mt-2 text-sm sm:text-base">Join <span className="font-semibold text-white">1000+ students</span> who transformed their careers with Gurukula.</p>
             </div>
             <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
-              className="relative z-10 flex-shrink-0 bg-orange-500 hover:bg-orange-400 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg text-sm sm:text-base whitespace-nowrap">
-              WhatsApp Enquiry →
+              className="relative z-10 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl text-sm sm:text-base">
+              Chat on WhatsApp →
             </a>
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          TESTIMONIALS
-      ════════════════════════════════════════════════════════════════ */}
+      {/* ════════════ TESTIMONIALS ════════════ */}
       <section id="testimonials" className="scroll-mt-24 bg-slate-50 py-20 sm:py-24 px-4 sm:px-8 relative overflow-hidden">
         <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-72 h-72 bg-blue-50 rounded-full blur-3xl opacity-60" />
         <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-50" />
-
         <div className="mx-auto max-w-7xl">
-
-          {/* HEADER */}
-          <div className="text-center mb-10 sm:mb-14" {...revealed("test-hdr")}>
-            <SectionHeader
-              badge="⭐ Student Reviews"
-              title="What Our"
-              highlight="Students Say"
-              subtitle="Hear from students who trained at Gurukula and built successful careers in the digital world."
-            />
+          <div className="text-center mb-10 sm:mb-14" data-reveal>
+            <SectionHeader badge="⭐ Student Reviews" title="What Our" highlight="Students Say"
+              subtitle="Hear from students who trained at Gurukula and built successful careers in the digital world." />
           </div>
-
-          {/* CARDS — single column on mobile, grid on sm+ */}
           <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
             {TESTIMONIALS.map((t, i) => (
-              <div
-                key={t.name}
-                {...revealed(`test-${i}`, `${i * 80}ms`)}
-                className="group relative bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 hover:border-blue-200 hover:shadow-xl transition-all duration-300 cursor-default w-full"
+              <div key={t.name} data-reveal data-reveal-delay={`${i * 80}ms`}
                 {...cardTiltProps}
-              >
+                className="tilt-card group relative bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 hover:border-blue-200 hover:shadow-xl cursor-default w-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none" />
                 <div className="relative z-10">
-
-                  {/* STARS */}
                   <Stars n={t.rating} />
-
-                  {/* REVIEW TEXT */}
-                  <div className="mt-4 mb-5">
-                    <p className="text-slate-600 text-sm leading-relaxed">{t.text}</p>
-                  </div>
-
-                  {/* AUTHOR ROW */}
+                  <div className="mt-4 mb-5"><p className="text-slate-600 text-sm leading-relaxed">{t.text}</p></div>
                   <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                    {/* avatar */}
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white text-xs font-black flex-shrink-0">
                       {t.name.split(" ").map(n => n[0]).join("")}
                     </div>
-
-                    {/* name + course */}
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-slate-900 truncate">{t.name}</p>
                       <p className="text-xs text-slate-500 truncate">{t.course} · {t.location}</p>
                     </div>
-
-                    {/* verified badge — shrinks gracefully */}
-                    <span className="flex-shrink-0 text-xs font-semibold bg-green-50 text-green-700 border border-green-100 px-2 py-1 rounded-full whitespace-nowrap">
-                      ✓ Verified
-                    </span>
+                    <span className="flex-shrink-0 text-xs font-semibold bg-green-50 text-green-700 border border-green-100 px-2 py-1 rounded-full whitespace-nowrap">✓ Verified</span>
                   </div>
-
                 </div>
               </div>
             ))}
           </div>
-
-          {/* RATING SUMMARY */}
-          <div
-            {...revealed("test-summary", "200ms")}
-            className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 bg-white border border-slate-200 rounded-2xl px-4 sm:px-8 py-6"
-          >
+          <div data-reveal data-reveal-delay="200ms"
+            className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 bg-white border border-slate-200 rounded-2xl px-4 sm:px-8 py-6">
             {[
-              { val: "4.9",  label: "Overall Rating",    extra: <Stars size={12} /> },
-              { val: "100+", label: "Students Trained"   },
-              { val: "98%",  label: "Satisfaction Rate"  },
-              { val: "1+",   label: "Years of Excellence"},
+              { val:"4.9",  label:"Overall Rating",     extra:<Stars size={12}/> },
+              { val:"1000+",label:"Students Trained"   },
+              { val:"98%",  label:"Satisfaction Rate"  },
+              { val:"1+",   label:"Years of Excellence" },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p className="text-2xl sm:text-4xl font-black text-slate-900">{s.val}</p>
@@ -1292,82 +1088,248 @@ export default function Home() {
               </div>
             ))}
           </div>
-
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          GALLERY
-      ════════════════════════════════════════════════════════════════ */}
+      {/* ════════════ GALLERY ════════════ */}
       <section id="gallery" className="scroll-mt-24 bg-white py-20 sm:py-24 px-4 sm:px-8 relative overflow-hidden">
         <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-35" />
         <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-30" />
 
         <div className="mx-auto max-w-7xl">
-          <div className="text-center mb-14" {...revealed("gallery-hdr")}>
-            <SectionHeader badge="📸 Our Campus" title="Life at" highlight="Gurukula"
-              subtitle="A glimpse into our modern labs, hands-on training sessions and student life at Gurukula Computer Training Centre." />
+          <div className="text-center mb-14" data-reveal>
+            <SectionHeader
+              badge="📸 Our Campus"
+              title="Life at"
+              highlight="Gurukula"
+              subtitle="A glimpse into our modern labs, hands-on training sessions and student life at Gurukula Computer Training Centre."
+            />
           </div>
 
-          {/* MASONRY */}
-          <div {...revealed("gallery-grid")} className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
-            {PHOTOS.map((photo, i) => (
-              <div key={i}
-                className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl border border-slate-200 cursor-zoom-in"
-                onClick={() => setLightbox({ ...photo, index: i })}>
-                <img src={photo.src} alt={photo.caption} loading="lazy"
-                  className={`w-full object-cover transition-transform duration-500 group-hover:scale-105 ${photo.tall ? "h-72" : "h-48"}`} />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl flex items-end justify-between p-4">
-                  <span className="text-white text-xs sm:text-sm font-semibold">{photo.caption}</span>
-                  <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2">
-                      <path strokeLinecap="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <GalleryGrid onOpen={setLightbox} />
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          COURSES
-      ════════════════════════════════════════════════════════════════ */}
+      {/* ════════════ AI CARD SECTION (UPGRADED) ════════════ */}
+      <section id="aicard" className="relative isolate overflow-hidden px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
+        {/* Background */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#16306f] via-[#2649a4] to-[#4b6fd1]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.14),transparent_28%),radial-gradient(circle_at_80%_72%,rgba(255,255,255,0.10),transparent_30%)]" />
+        <div className="absolute inset-0 -z-10 opacity-15 [background-image:radial-gradient(circle_at_center,white_1.1px,transparent_1.1px)] [background-size:38px_38px]" />
+
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-12 items-start">
+          {/* LEFT */}
+          <div className="flex flex-col">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white">
+              <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+              Authorized Training Center
+            </div>
+
+            <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-white">
+              Official AI Card Training Center of{" "}
+              <span className="text-blue-100">Yaticorp India Pvt. Ltd.</span>
+            </h2>
+
+            <p className="mt-5 max-w-xl text-blue-50/95 text-base sm:text-lg leading-relaxed">
+              Gurukula Computer Training Centre is an officially authorized training partner of{" "}
+              <strong className="text-white">Yaticorp India Private Limited</strong>. We provide access to the{" "}
+              <strong className="text-white">World&apos;s First AI Learning Card</strong>, designed to make AI education
+              affordable, practical, and job-oriented.
+            </p>
+
+            <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                "Access to 50+ AI Tools",
+                "Lifetime Learning Access",
+                "Beginner to Advanced AI Training",
+                "Kannada & English Learning Support",
+                "Government & Industry Certification",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="group flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur px-3 py-3 hover:bg-white/20 hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="h-6 w-6 rounded-full bg-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M2 6l2.8 2.8L10 3.6" stroke="#1f3f93" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-semibold text-white">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://www.yaticorp.com/ai-card"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Explore AI Card on Yaticorp website"
+                className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl bg-white px-6 py-3 text-[#1f3f93] font-bold hover:bg-blue-50 transition-all hover:-translate-y-0.5"
+              >
+                Explore AI Card
+              </a>
+              <a
+                href="https://wa.me/916366564639"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Get AI Card details on WhatsApp"
+                className="inline-flex w-full sm:w-auto items-center justify-center rounded-xl border border-white/35 bg-white/10 px-6 py-3 font-bold text-white hover:bg-white/20 transition-all hover:-translate-y-0.5"
+              >
+                Ask on WhatsApp
+              </a>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <div className="relative w-full max-w-xl mx-auto lg:mx-0 lg:ml-auto">
+            <div className="absolute -top-4 -right-2 sm:-right-4 rounded-xl bg-white text-[#1f3f93] px-3 py-2 text-xs font-extrabold shadow-lg">
+              Authorized
+            </div>
+            <div className="group rounded-3xl border border-white/30 bg-white/95 overflow-hidden shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
+              <div className="bg-gradient-to-r from-[#2d4fb2] to-[#5e7fda] text-white p-5 sm:p-6">
+                <p className="text-xs uppercase font-bold tracking-[0.16em] opacity-90">World&apos;s First</p>
+                <h3 className="text-2xl sm:text-3xl font-black mt-1">AI Learning Card</h3>
+                <p className="mt-2 text-sm text-blue-100">One-time investment. Lifetime AI learning access.</p>
+              </div>
+              <div className="p-5 sm:p-6">
+                <p className="text-sm text-slate-600">Includes high-demand skills:</p>
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-semibold">
+                  {["Foundation AI", "50+ AI Tools", "Power BI", "Tableau"].map((t) => (
+                    <span key={t} className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-slate-700 text-center">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex items-end justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Offer Price</p>
+                    <p className="text-3xl font-black text-[#2d4fb2] leading-none mt-1">₹499</p>
+                    <p className="mt-1 text-xs text-slate-500">Includes starter mentorship and support group access</p>
+                  </div>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
+                    One-Time Payment
+                  </span>
+                </div>
+
+                <a
+                  href="https://www.yaticorp.com/ai-card"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Activate AI Learning Card"
+                  className="mt-6 block w-full rounded-xl bg-[#2d4fb2] py-3 text-center font-bold text-white hover:bg-[#24439a] transition-colors"
+                >
+                  Activate Now →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* ════════════ CERTIFICATE + FEATURES (ALIGNED) ════════════ */}
+<div className="lg:col-span-2 mt-12 w-full">
+  <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(280px,360px)_1fr] lg:items-start">
+    {/* LEFT — CERTIFICATE */}
+    <div className="flex flex-col items-center lg:items-start">
+      <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-blue-100/80 lg:text-left">
+        Authorization Proof
+      </p>
+
+      <a
+        href={certificateImg}
+        target="_blank"
+        rel="noreferrer"
+        className="group w-full max-w-[340px] overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur transition-all hover:bg-white/15"
+      >
+        <div className="flex aspect-[4/5] items-center justify-center bg-white p-2">
+          <img
+            src={certificateImg}
+            alt="Yaticorp authorization certificate"
+            className="h-full w-full rounded-md object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+          />
+        </div>
+
+        <div className="flex items-center justify-between px-4 py-3">
+          <div>
+            <p className="text-xs font-semibold text-white">Authorized by Yaticorp</p>
+            <p className="text-[10px] text-blue-100/80">Issued: 23 Feb 2026</p>
+          </div>
+
+          <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold text-[#1f3f93]">
+            View
+          </span>
+        </div>
+      </a>
+
+      <p className="mt-2 text-center text-[11px] text-blue-100/80 lg:text-left">
+        Tap to verify authorization
+      </p>
+    </div>
+
+    {/* RIGHT — FEATURES */}
+    <div className="grid content-start gap-5 sm:grid-cols-2 lg:pt-24">
+      {[
+        { title: "Theory & Practical Learning", desc: "Real-world focused sessions" },
+        { title: "Expert Instructors", desc: "Learn from industry experts" },
+        { title: "Certification Program", desc: "Structured learning path" },
+        { title: "Proven Systems", desc: "Trusted by institutes" },
+        { title: "Industry-Ready Skills", desc: "Tools used by companies" },
+        { title: "Career Advancement", desc: "Stand out in job market" },
+      ].map((item) => (
+        <div
+          key={item.title}
+          className="group flex h-full gap-4 rounded-xl border border-white/20 bg-white/90 p-4 shadow-sm transition-all hover:-translate-y-[2px] hover:shadow-lg"
+        >
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-600 font-bold text-white">
+            ✓
+          </div>
+
+          <div className="min-w-0">
+            <h4 className="text-sm font-semibold text-slate-800">{item.title}</h4>
+            <p className="mt-1 text-xs text-slate-500">{item.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+        </div>
+      </section>
+
+      {/* ════════════ COURSES ════════════ */}
       <section id="courses" className="scroll-mt-24 bg-slate-50 py-20 sm:py-24 px-4 sm:px-8 relative overflow-hidden">
         <div className="pointer-events-none absolute -z-10 -top-20 -right-20 w-80 h-80 bg-blue-50 rounded-full blur-3xl opacity-60" />
         <div className="pointer-events-none absolute -z-10 bottom-0 left-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-50" />
-
         <div className="mx-auto max-w-7xl">
-          <div className="text-center mb-12" {...revealed("courses-hdr")}>
+          <div className="text-center mb-12" data-reveal>
             <SectionHeader badge="📚 Our Programs" title="Explore Our" highlight="Professional Courses"
               subtitle="Diploma, certificate, design, AI and software training programs built for real career growth." />
           </div>
 
+          <div className="mb-8 flex items-center justify-center">
+            <div className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs sm:text-sm font-bold text-blue-800">
+              🎉 Special Offer: <span className="text-blue-900">10% OFF on all courses</span> • Limited <span className="text-blue-900">Time Offer</span>
+            </div>
+          </div>
           {/* AI CARD BANNER */}
           <div className="mb-10 relative overflow-hidden rounded-2xl p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
-            style={{ background: "linear-gradient(135deg,#042C53 0%,#185FA5 60%,#378ADD 100%)" }}>
+            style={{ background:"linear-gradient(135deg,#042C53 0%,#185FA5 60%,#378ADD 100%)" }}>
             <div className="absolute -top-12 -right-12 w-52 h-52 rounded-full bg-white/5 pointer-events-none" />
             <div className="relative z-10">
               <span className="inline-flex items-center gap-1.5 mb-3 rounded-full bg-orange-400 px-3 py-1 text-xs font-bold text-orange-950">✨ New</span>
               <h3 className="text-xl sm:text-2xl font-black text-white leading-snug">Get Your AI Card</h3>
-              <p className="mt-2 text-xs sm:text-sm text-blue-200 max-w-sm leading-relaxed">
-                Unlock exclusive AI learning benefits, tools and resources. Activate today and power up your digital journey.
-              </p>
+              <p className="mt-2 text-xs sm:text-sm text-blue-200 max-w-sm leading-relaxed">Unlock exclusive AI learning benefits, tools and resources. Activate today and power up your digital journey.</p>
             </div>
             <div className="relative z-10 flex flex-wrap gap-3 flex-shrink-0">
               <a href="https://www.yaticorp.com/activate-ai-card" target="_blank" rel="noreferrer"
-                className="rounded-xl bg-orange-400 px-5 py-2.5 font-bold text-orange-950 text-sm whitespace-nowrap transition-all hover:bg-orange-300 hover:-translate-y-0.5">
-                Activate AI Card
-              </a>
+                className="rounded-xl bg-orange-400 px-5 py-2.5 font-bold text-orange-950 text-sm whitespace-nowrap transition-all hover:bg-orange-300 hover:-translate-y-0.5">Activate AI Card</a>
               <a href="https://www.yaticorp.com/AI-Card" target="_blank" rel="noreferrer"
-                className="rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 font-bold text-white text-sm whitespace-nowrap transition-all hover:bg-white/20 hover:-translate-y-0.5">
-                Know More →
-              </a>
+                className="rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 font-bold text-white text-sm whitespace-nowrap transition-all hover:bg-white/20 hover:-translate-y-0.5">Know More →</a>
             </div>
           </div>
 
-          {/* CATEGORY FILTER — horizontally scrollable on mobile */}
+          {/* CATEGORY FILTER */}
           <div className="mb-10 -mx-4 sm:mx-0 overflow-x-auto pb-2">
             <div className="flex min-w-max gap-2.5 px-4 sm:px-0">
               {courseCategories.map((cat) => (
@@ -1383,108 +1345,138 @@ export default function Home() {
             </div>
           </div>
 
-          {/* COURSE CATEGORIES */}
-          {visibleCategories.map((category) => {
-            const catCourses = COURSES.filter(c => c.category?.toLowerCase().trim() === category.toLowerCase().trim());
-            return (
-              <div key={category} className="mb-14">
-                <div className="flex items-center gap-4 mb-8">
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 whitespace-nowrap">{category}</h3>
-                  <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full whitespace-nowrap">
-                    {catCourses.length} course{catCourses.length !== 1 ? "s" : ""}
-                  </span>
+
+        {/* FIXED CATEGORY SWITCH */}
+        <div key={activeCategory}>
+          
+
+          {/* ================= NORMAL COURSES ================= */}
+          {activeCategory !== "Individual Courses" &&
+            visibleCategories.map((category) => {
+              const catCourses = COURSES.filter(
+                (c) => c.category?.toLowerCase().trim() === category.toLowerCase().trim()
+              );
+
+              return (
+                <div key={category} className="mb-14">
+                  {/* HEADER */}
+                  <div className="flex items-center gap-4 mb-8">
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900 whitespace-nowrap">
+                      {category}
+                    </h3>
+                    <div className="flex-1 h-px bg-slate-200" />
+                    <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                      {catCourses.length} courses
+                    </span>
+                  </div>
+
+                  {/* GRID */}
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {catCourses.map((course, i) => (
+                      <article
+                        key={course.id}
+                        className="course-card group relative rounded-2xl border border-slate-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-blue-200"
+                        style={{ animation: `fadeInUp 0.4s ease ${i * 0.06}s both` }}
+                        {...cardTiltProps}
+                      >
+                        {/* IMAGE */}
+                        <div className="relative overflow-hidden">
+                          <img
+                            src={course.image || "/images/hero.jpg"}
+                            alt={course.title}
+                            loading="lazy"
+                            className="course-img w-full object-contain"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                        </div>
+
+                        {/* BODY */}
+                        <div className="p-4 sm:p-5">
+                          <h4 className="text-sm font-bold text-slate-900 mb-3 line-clamp-2">
+                            {course.title}
+                          </h4>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <a
+                              href="https://wa.me/916366564639"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="rounded-xl bg-orange-500 py-2.5 text-xs font-bold text-white text-center"
+                            >
+                              Apply Now
+                            </a>
+
+                            <button
+                              onClick={() => setSelectedCourse(course)}
+                              className="rounded-xl border border-blue-600 py-2.5 text-xs font-bold text-blue-700 hover:bg-blue-700 hover:text-white"
+                            >
+                              Know More
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                    
+                  </div>
                 </div>
-
-                <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {catCourses.map((course, i) => (
-                    <article key={course.id}
-                      className="course-card group relative rounded-2xl border border-slate-200 bg-white overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-blue-200"
-                      style={{ animation: `fadeInUp 0.4s ease ${i * 0.06}s both` }}
-                      {...cardTiltProps}>
-                      {/* IMAGE */}
-                      <div className="relative overflow-hidden">
-                        <img 
-                          src={course.image || "/images/hero.jpg"} 
-                          alt={course.title} 
-                          loading="lazy"
-                          className="course-img w-full object-contain"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                        <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-full">
-                          ⭐ {course.rating || "4.5"}
-                        </div>
-                        {course.popular && (
-                          <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">🔥 Popular</div>
-                        )}
-                        <div className="absolute bottom-3 left-3 bg-white/20 backdrop-blur-sm border border-white/30 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                          Flexible Learning
-                        </div>
-                      </div>
-
-                      {/* BODY */}
-                      <div className="p-4 sm:p-5">
-                        <h4 className="text-sm font-bold text-slate-900 leading-snug mb-3 line-clamp-2">{course.title}</h4>
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          <span className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md font-medium">⏱ {course.duration}</span>
-                          <span className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md font-medium">🎓 Certificate</span>
-                          {course.price && <span className="bg-green-50 text-green-700 text-xs px-2 py-1 rounded-md font-semibold border border-green-100">{course.price}</span>}
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
-                            className="rounded-xl bg-orange-500 py-2.5 text-xs font-bold text-white text-center hover:bg-orange-600 transition-all hover:shadow-md hover:shadow-orange-100 active:scale-95">
-                            Apply Now
-                          </a>
-                          <button onClick={() => setSelectedCourse(course)}
-                            className="rounded-xl border border-blue-600 py-2.5 text-xs font-bold text-blue-700 hover:bg-blue-700 hover:text-white transition-all active:scale-95">
-                            Know More
-                          </button>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-
-          {/* INDIVIDUAL COURSES */}
-          {(activeCategory === "All" || activeCategory === "Individual Courses") && (
-            <div {...revealed("individual")}
-              className="relative overflow-hidden rounded-2xl border border-slate-200 p-6 sm:p-10"
-              style={{ background: "linear-gradient(135deg,#F8FAFC 0%,#EFF6FF 100%)" }}>
+              );
+            })}
+            {(activeCategory === "Individual Courses" || activeCategory === "All") && (
+            /* ================= INDIVIDUAL COURSES ================= */
+            <div
+              className="relative overflow-hidden rounded-2xl border border-slate-200 p-6 sm:p-10 mb-14"
+              style={{ background: "linear-gradient(135deg,#F8FAFC 0%,#EFF6FF 100%)" }}
+            >
               <div className="absolute -top-10 -right-10 w-48 h-48 bg-blue-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
+
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-xl">🛠️</div>
                   <h3 className="text-xl sm:text-2xl font-black text-slate-900">Individual Courses</h3>
                 </div>
-                <p className="text-slate-500 text-sm mb-8 ml-13">Learn specific software quickly — flexible, focused and affordable.</p>
+
+                <p className="text-slate-500 text-sm mb-8">
+                  Learn specific software quickly — flexible, focused and affordable.
+                </p>
 
                 <div className="grid sm:grid-cols-2 gap-8">
+                  {/* LEFT */}
                   <div>
-                    <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-4">Courses Available</p>
-                    <div className="grid grid-cols-1 gap-2">
+                    <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-4">
+                      Courses Available
+                    </p>
+
+                    <div className="grid gap-2">
                       {INDIVIDUAL_COURSES.map((c) => (
-                        <div key={c} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-2.5 hover:border-blue-200 hover:bg-blue-50 transition-all cursor-default">
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                        <div key={c} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-2.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                           <span className="text-sm text-slate-700 font-medium">{c}</span>
                         </div>
                       ))}
                     </div>
                   </div>
+
+                  {/* RIGHT */}
                   <div>
-                    <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-4">Career Opportunities</p>
-                    <div className="grid grid-cols-1 gap-2">
+                    <p className="text-xs font-bold text-orange-600 uppercase tracking-widest mb-4">
+                      Career Opportunities
+                    </p>
+
+                    <div className="grid gap-2">
                       {INDIVIDUAL_CAREERS.map((c) => (
-                        <div key={c} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-2.5 hover:border-orange-200 hover:bg-orange-50 transition-all cursor-default">
-                          <div className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0" />
+                        <div key={c} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-2.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                           <span className="text-sm text-slate-700 font-medium">{c}</span>
                         </div>
                       ))}
                     </div>
-                    <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
-                      className="mt-6 flex items-center justify-center gap-2 w-full rounded-xl bg-green-600 py-3 font-bold text-white text-sm hover:bg-green-700 transition-all hover:-translate-y-0.5">
+
+                    <a
+                      href="https://wa.me/916366564639"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-6 flex items-center justify-center gap-2 w-full rounded-xl bg-green-600 py-3 font-bold text-white text-sm hover:bg-green-700 transition-all hover:-translate-y-0.5"
+                    >
                       💬 Enquire on WhatsApp
                     </a>
                   </div>
@@ -1493,64 +1485,122 @@ export default function Home() {
             </div>
           )}
         </div>
+        </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          FAQ
-      ════════════════════════════════════════════════════════════════ */}
-      <section id="faq" className="scroll-mt-24 px-4 py-20 sm:py-24 sm:px-8 bg-white relative overflow-hidden">
+      {/* ════════════ FAQ ════════════ */}
+      <section
+        id="faq"
+        className="scroll-mt-24 px-4 py-20 sm:py-24 sm:px-8 bg-white relative overflow-hidden"
+      >
         <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-72 h-72 bg-blue-50 rounded-full blur-3xl opacity-60" />
         <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-50" />
 
         <div className="mx-auto max-w-4xl">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-10 items-start mb-12">
-            {/* LEFT */}
-            <div {...revealed("faq-hdr")}>
-              <SectionHeader badge="❓ FAQ" title="Frequently Asked" highlight="Questions"
+            <div data-reveal>
+              <SectionHeader
+                badge="❓ FAQ"
+                title="Frequently Asked"
+                highlight="Questions"
                 subtitle="Everything you need to know about our courses, certificates and training. Can't find an answer? Chat with us directly."
-                center={false} />
+                center={false}
+              />
             </div>
 
-            {/* RIGHT — contact card */}
-            <div className="rounded-2xl p-6 sm:p-7 text-white relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}>
+            <div
+              className="rounded-2xl p-6 sm:p-7 text-white relative overflow-hidden"
+              style={{
+                background:
+                  "linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)",
+              }}
+            >
               <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
               <div className="relative z-10">
-                <p className="text-xs font-semibold text-blue-300 uppercase tracking-widest mb-3">Still have questions?</p>
-                <h3 className="text-lg sm:text-xl font-black text-white mb-2">Talk to our team</h3>
-                <p className="text-xs sm:text-sm text-blue-200 leading-relaxed mb-6">We're happy to answer any questions about admissions, courses, fees and schedules.</p>
-                <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg">
+                <p className="text-xs font-semibold text-blue-300 uppercase tracking-widest mb-3">
+                  Still have questions?
+                </p>
+                <h3 className="text-lg sm:text-xl font-black text-white mb-2">
+                  Talk to our team
+                </h3>
+                <p className="text-xs sm:text-sm text-blue-200 leading-relaxed mb-6">
+                  We're happy to answer any questions about admissions, courses, fees
+                  and schedules.
+                </p>
+                <a
+                  href="https://wa.me/916366564639"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                >
                   💬 WhatsApp Us
                 </a>
               </div>
             </div>
           </div>
 
-          {/* FAQ ITEMS */}
           <div className="space-y-3">
             {FAQS.map((item, i) => {
               const isOpen = openFaq === i;
+
               return (
-                <div key={item.q}
-                  {...revealed(`faq-${i}`, `${i * 60}ms`)}
+                <div
+                  key={`${item.q}-${i}`}
+                  data-reveal
+                  data-reveal-delay={`${i * 60}ms`}
                   className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
-                    isOpen ? "border-blue-200 shadow-lg shadow-blue-50 bg-white" : "border-slate-200 bg-white hover:border-blue-200 hover:shadow-md"
-                  }`}>
+                    isOpen
+                      ? "border-blue-200 shadow-lg shadow-blue-50 bg-white"
+                      : "border-slate-200 bg-white hover:border-blue-200 hover:shadow-md"
+                  }`}
+                >
                   <button
                     className="flex w-full items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 text-left"
-                    onClick={() => setOpenFaq(isOpen ? -1 : i)}
-                    aria-expanded={isOpen}>
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-300 ${isOpen ? "bg-blue-700 text-white" : "bg-slate-100 text-slate-400"}`}>
+                    onClick={() => setOpenFaq((prev) => (prev === i ? -1 : i))}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-panel-${i}`}
+                    id={`faq-trigger-${i}`}
+                  >
+                    <div
+                      className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                        isOpen
+                          ? "bg-blue-700 text-white"
+                          : "bg-slate-100 text-slate-400"
+                      }`}
+                    >
                       {String(i + 1).padStart(2, "0")}
                     </div>
-                    <span className="flex-1 font-bold text-slate-900 text-sm sm:text-base leading-snug">{item.q}</span>
-                    <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xl font-light transition-all duration-300 ${isOpen ? "bg-blue-50 text-blue-700 rotate-45" : "bg-slate-100 text-slate-400"}`}>+</div>
+
+                    <span className="flex-1 font-bold text-slate-900 text-sm sm:text-base leading-snug">
+                      {item.q}
+                    </span>
+
+                    <div
+                      className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xl font-light transition-all duration-300 ${
+                        isOpen
+                          ? "bg-blue-50 text-blue-700 rotate-45"
+                          : "bg-slate-100 text-slate-400"
+                      }`}
+                    >
+                      +
+                    </div>
                   </button>
-                  <div className={`faq-body ${isOpen ? "open" : ""}`}>
-                    <div className="faq-inner">
+
+                  <div
+                    id={`faq-panel-${i}`}
+                    role="region"
+                    aria-labelledby={`faq-trigger-${i}`}
+                    className={`grid transition-all duration-300 ${
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
                       <div className="px-4 sm:px-6 pb-5 pl-16 sm:pl-[4.5rem]">
-                        <p className="text-slate-500 text-sm leading-relaxed">{item.a}</p>
+                        <p className="text-slate-500 text-sm leading-relaxed">
+                          {item.a}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1561,28 +1611,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          CONTACT
-      ════════════════════════════════════════════════════════════════ */}
+      {/* ════════════ CONTACT ════════════ */}
       <section id="contact" className="scroll-mt-24 bg-slate-50 px-4 py-20 sm:py-24 sm:px-8 relative overflow-hidden">
         <div className="pointer-events-none absolute -z-10 -top-20 -left-20 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-50" />
         <div className="pointer-events-none absolute -z-10 -bottom-20 -right-20 w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-40" />
-
         <div className="mx-auto max-w-7xl">
-          <div className="mb-12" {...revealed("contact-hdr")}>
+          <div className="mb-12" data-reveal>
             <SectionHeader badge="📍 Find Us" title="Contact" highlight="Us"
               subtitle="Visit us at our Belthangady campus or reach out via WhatsApp — we're always happy to help with admissions and course queries."
               center={false} />
           </div>
-
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* LEFT — info */}
             <div className="flex flex-col gap-4">
               {[
-                { icon: "🏫", label: "Institute", value: "Gurukula Computer Training Centre" },
-                { icon: "📞", label: "Phone",     value: "6366564639" },
-                { icon: "📍", label: "Address",   value: "Shri Gurusanidhya Building, Near Bharat Petrol Pump, Belthangady – 574214" },
+                { icon:"🏫", label:"Institute", value:"Gurukula Computer Training Centre" },
+
+                // existing office number
+                { icon:"☎️", label:"Office Phone", value:"6366564639" },
+
+                // add these two
+                { icon:"📱", label:"Contact Number 1", value:"YOUR_SECOND_NUMBER" },
+                { icon:"📱", label:"Contact Number 2", value:"YOUR_THIRD_NUMBER" },
+
+                { icon:"📍", label:"Address", value:"Shri Gurusanidhya Building, Near Bharat Petrol Pump, Belthangady – 574214" },
               ].map((info) => (
+
                 <div key={info.label}
                   className="group flex items-start gap-4 bg-white border border-slate-200 rounded-2xl px-4 sm:px-5 py-4 hover:border-blue-200 hover:bg-blue-50 hover:translate-x-1 transition-all duration-300 cursor-default">
                   <div className="w-10 h-10 rounded-xl bg-blue-50 group-hover:bg-blue-700 flex items-center justify-center text-lg flex-shrink-0 transition-colors duration-300">{info.icon}</div>
@@ -1592,17 +1645,15 @@ export default function Home() {
                   </div>
                 </div>
               ))}
-
-              {/* HOURS */}
               <div className="relative overflow-hidden rounded-2xl p-5 sm:p-6 text-white"
-                style={{ background: "linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}>
+                style={{ background:"linear-gradient(135deg,#0F172A 0%,#1E3A8A 55%,#1D4ED8 100%)" }}>
                 <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/5 pointer-events-none" />
                 <div className="relative z-10">
                   <p className="text-xs font-semibold text-blue-300 uppercase tracking-widest mb-4">🕐 Working Hours</p>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-blue-200">Monday – Saturday</span>
-                      <span className="text-sm font-bold text-white">9:00 AM – 6:00 PM</span>
+                      <span className="text-sm font-bold text-white">9:00 AM – 5:30 PM</span>
                     </div>
                     <div className="h-px bg-white/10" />
                     <div className="flex items-center justify-between">
@@ -1612,25 +1663,15 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-
-              {/* QUICK CTA */}
               <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer"
                 className="flex items-center justify-center gap-3 w-full rounded-2xl bg-[#25D366] hover:bg-[#1ebe5d] py-4 font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-200">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                </svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 Chat on WhatsApp
               </a>
             </div>
-
-            {/* RIGHT — MAP */}
             <div className="relative rounded-3xl overflow-hidden border border-slate-200 shadow-lg min-h-[380px] sm:min-h-[420px]">
-              <iframe
-                className="w-full h-full min-h-[380px] sm:min-h-[420px] border-0"
-                title="Gurukula Computer Training Centre location"
-                src="https://maps.google.com/maps?q=belthangady&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                loading="lazy"
-              />
+              <iframe className="w-full h-full min-h-[380px] sm:min-h-[420px] border-0" title="Gurukula Computer Training Centre location"
+                src="https://maps.google.com/maps?q=belthangady&t=&z=14&ie=UTF8&iwloc=&output=embed" loading="lazy" />
               <div className="absolute top-4 left-4 bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-md flex items-center gap-3">
                 <div className="relative flex-shrink-0">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
@@ -1646,9 +1687,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════
-          FLOATING UI — WhatsApp + Back to top
-      ════════════════════════════════════════════════════════════════ */}
+      {/* ════════════ FLOATING UI ════════════ */}
       {/* WhatsApp FAB */}
       <div className="fixed bottom-6 right-5 z-50 flex flex-col items-end gap-2 group">
         <div className="bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0 whitespace-nowrap pointer-events-none select-none">
@@ -1658,24 +1697,22 @@ export default function Home() {
           <div className="absolute inset-0 rounded-full bg-[#25D366] anim-ping opacity-25" />
           <a href="https://wa.me/916366564639" target="_blank" rel="noreferrer" aria-label="WhatsApp"
             className="relative w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#1ebe5d] flex items-center justify-center shadow-lg shadow-green-200 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-green-300">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           </a>
         </div>
       </div>
 
-      {/* Back to top */}
-      {scrollY > 400 && (
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 left-5 z-50 w-11 h-11 rounded-full bg-slate-900 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-          style={{ animation: "fadeInUp 0.3s ease both" }}
-          aria-label="Back to top">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7"/>
-          </svg>
-        </button>
-      )}
+      {/* FIX: Back-to-top — always in DOM, shown/hidden via opacity by useScrollTopBtn.
+          No conditional render = no React reconciliation on scroll */}
+      <button id="scroll-top-btn"
+        onClick={() => window.scrollTo({ top:0, behavior:"smooth" })}
+        className="fixed bottom-6 left-5 z-50 w-11 h-11 rounded-full bg-slate-900 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+        style={{ opacity:0, pointerEvents:"none", transition:"opacity 0.3s ease" }}
+        aria-label="Back to top">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7"/>
+        </svg>
+      </button>
 
       {/* ── MODALS ── */}
       {selectedCourse && <CourseModal course={selectedCourse} onClose={() => setSelectedCourse(null)} />}
